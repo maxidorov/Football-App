@@ -15,6 +15,7 @@ class ViewController: UIViewController {
         
         // UI Constants
         static let headerViewHeight: CGFloat = 120
+        static let bottomBarHeight: CGFloat = 80
         static let fakeCellMargin: CGFloat = 10
         static let fakeCellHeight: CGFloat = FakeCollectionViewCell.cellHeight
     }
@@ -29,8 +30,12 @@ class ViewController: UIViewController {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         return view
     } ()
-    
     private lazy var headerView: UIView = UIView()
+    private lazy var bottomBar: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemGreen
+        return view
+    }()
     
     private lazy var fakeItems: [String] = (1...10).map { i -> String in return "Cell #\(i)"}
     
@@ -38,18 +43,17 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         let viewSubviews: [UIView] = [
-            headerView,
-            collectionViewMatches,
+            headerView, collectionViewMatches, bottomBar,
         ]
         for v in viewSubviews { view.addSubview(v) }
 
         collectionViewMatches.backgroundColor = .clear
         collectionViewMatches.delegate = self
         collectionViewMatches.dataSource = self
-        
-        collectionViewMatches.register(FakeCollectionViewCell.self,
-                                       forCellWithReuseIdentifier: Constants.CVFakeCellId)
-
+        collectionViewMatches.register(
+            FakeCollectionViewCell.self,
+            forCellWithReuseIdentifier: Constants.CVFakeCellId
+        )
         collectionViewMatches.reloadData()
     }
     
@@ -65,9 +69,15 @@ class ViewController: UIViewController {
         
         collectionViewMatches.frame = CGRect(
             x: 0, y: uiPrevMaxY,
-            width: view.bounds.width, height: view.bounds.height - uiPrevMaxY
+            width: view.bounds.width,
+            height: -uiPrevMaxY + view.bounds.height - Constants.bottomBarHeight
         )
         uiPrevMaxY += collectionViewMatches.frame.height
+        
+        bottomBar.frame = CGRect(
+            x: 0, y: uiPrevMaxY,
+            width: view.bounds.width, height: Constants.bottomBarHeight
+        )
     }
 }
 
