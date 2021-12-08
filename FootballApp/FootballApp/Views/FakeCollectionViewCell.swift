@@ -20,7 +20,7 @@ class FakeCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         let viewSubviews: [UIView] = [
-            label
+            label,
         ]
         for v in viewSubviews { contentView.addSubview(v) }
         contentView.clipsToBounds = true
