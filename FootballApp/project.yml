@@ -1,0 +1,23 @@
+name: FootballApp
+options:
+  bundleIdPrefix: com.MS
+  xcodeVersion: '12.0'
+  deploymentTarget: '13.0'
+  groupSortPosition: top
+  generateEmptyDirectories: true
+
+configs:
+  Debug.Dev: debug
+  Debug.Prod: debug
+  Release: release
+
+targets:
+  FootballApp:
+    type: application
+    platform: iOS
+    deploymentTarget: 13.0
+    settings:
+      base:
+        MARKETING_VERSION: 1.0
+    sources:
+       - path: ./FootballApp
