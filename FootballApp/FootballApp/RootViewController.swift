@@ -18,6 +18,7 @@ class RootViewController: UITabBarController {
         vc.title = Constants.mainVCTitle
         return vc
     } ()
+  
     private var searchViewController: UIViewController = {
         let vc = SearchViewController()
         vc.title = Constants.searchVCTitle

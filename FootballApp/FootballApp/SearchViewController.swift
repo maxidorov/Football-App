@@ -20,12 +20,8 @@ class SearchViewController: UIViewController {
         static let fakeCellHeight: CGFloat = FakeCollectionViewCell.cellHeight
         static let statusBarHeight: CGFloat = {
             var statusBarHeight: CGFloat = 0
-            if #available(iOS 13.0, *) {
-                let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
-                statusBarHeight = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
-            } else {
-                statusBarHeight = UIApplication.shared.statusBarFrame.height
-            }
+            let window = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
+            statusBarHeight = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
             return statusBarHeight
         }()
     }
@@ -57,7 +53,6 @@ class SearchViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         [
             searchBar, searchResultsCollectionView, bottomBar,
         ].forEach { view.addSubview($0) }
@@ -101,11 +96,11 @@ class SearchViewController: UIViewController {
 
 extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
+        1
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return fakeItems.count
+        fakeItems.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

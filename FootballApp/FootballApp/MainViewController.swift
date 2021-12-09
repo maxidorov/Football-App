@@ -30,7 +30,9 @@ class MainViewController: UIViewController {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         return view
     } ()
+
     private var headerView: UIView = UIView()
+
     private var bottomBar: UIView = {
         let view = UIView()
         view.backgroundColor = .systemGreen
@@ -84,11 +86,11 @@ class MainViewController: UIViewController {
 //MARK: - CollectionView's Delegate & DataSource
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
+        1
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return fakeItems.count
+        fakeItems.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
