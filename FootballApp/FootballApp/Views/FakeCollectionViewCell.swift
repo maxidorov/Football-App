@@ -12,17 +12,15 @@ class FakeCollectionViewCell: UICollectionViewCell {
     static let cellHeight: CGFloat = 50
     
     private let label: UILabel = {
-        let label = UILabel()
-        label.text = "tt"
-        return label
+        return UILabel()
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        let viewSubviews: [UIView] = [
+        [
             label,
-        ]
-        for v in viewSubviews { contentView.addSubview(v) }
+        ].forEach { contentView.addSubview($0) }
+        
         contentView.clipsToBounds = true
     }
     

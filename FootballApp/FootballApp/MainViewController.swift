@@ -12,12 +12,12 @@ class MainViewController: UIViewController {
         // CV = collectionView
         static let CVMatchesSectionsNumber: Int = 1
         static let CVFakeCellId: String = FakeCollectionViewCell.identifier
+        static let fakeCellMargin: CGFloat = 10
+        static let fakeCellHeight: CGFloat = FakeCollectionViewCell.cellHeight
         
         // UI Constants
         static let headerViewHeight: CGFloat = 120
         static let bottomBarHeight: CGFloat = 80
-        static let fakeCellMargin: CGFloat = 10
-        static let fakeCellHeight: CGFloat = FakeCollectionViewCell.cellHeight
     }
     
     private lazy var matchesCollectionView: UICollectionView = {
@@ -30,8 +30,8 @@ class MainViewController: UIViewController {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         return view
     } ()
-    private lazy var headerView: UIView = UIView()
-    private lazy var bottomBar: UIView = {
+    private var headerView: UIView = UIView()
+    private var bottomBar: UIView = {
         let view = UIView()
         view.backgroundColor = .systemGreen
         view.isHidden = true
@@ -43,10 +43,9 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let viewSubviews: [UIView] = [
+        [
             headerView, matchesCollectionView, bottomBar,
-        ]
-        for v in viewSubviews { view.addSubview(v) }
+        ].forEach { view.addSubview($0) }
 
         matchesCollectionView.backgroundColor = .clear
         matchesCollectionView.delegate = self

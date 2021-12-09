@@ -14,10 +14,20 @@ class SearchViewController: UIViewController {
         static let CVFakeCellId: String = FakeCollectionViewCell.identifier
         
         // UI Constants
-        static let headerViewHeight: CGFloat = SearchHeaderView.headerHeight
+        static let searchBarHeight: CGFloat = 40
         static let bottomBarHeight: CGFloat = 80
         static let fakeCellMargin: CGFloat = 10
         static let fakeCellHeight: CGFloat = FakeCollectionViewCell.cellHeight
+        static let statusBarHeight: CGFloat = {
+            var statusBarHeight: CGFloat = 0
+            if #available(iOS 13.0, *) {
+                let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
+                statusBarHeight = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+            } else {
+                statusBarHeight = UIApplication.shared.statusBarFrame.height
+            }
+            return statusBarHeight
+        }()
     }
     
     private lazy var searchResultsCollectionView: UICollectionView = {
@@ -31,8 +41,12 @@ class SearchViewController: UIViewController {
         return view
     }()
     
-    private lazy var headerView: UIView = SearchHeaderView()
-    private lazy var bottomBar: UIView = {
+    private var searchBar: UIView = {
+        let searchbar = UISearchBar()
+        searchbar.backgroundImage = UIImage()
+        return searchbar
+    }()
+    private var bottomBar: UIView = {
         let view = UIView()
         view.backgroundColor = .systemGreen
         view.isHidden = true
@@ -44,10 +58,9 @@ class SearchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let viewSubviews: [UIView] = [
-            headerView, searchResultsCollectionView, bottomBar,
-        ]
-        for v in viewSubviews { view.addSubview(v) }
+        [
+            searchBar, searchResultsCollectionView, bottomBar,
+        ].forEach { view.addSubview($0) }
 
         searchResultsCollectionView.backgroundColor = .clear
         searchResultsCollectionView.delegate = self
@@ -63,11 +76,11 @@ class SearchViewController: UIViewController {
         super.viewWillLayoutSubviews()
         var uiPrevMaxY: CGFloat = 0
         
-        headerView.frame = CGRect(
-            x: 0, y: 0,
-            width: view.bounds.width, height: Constants.headerViewHeight
+        searchBar.frame = CGRect(
+            x: 0, y: Constants.statusBarHeight,
+            width: view.bounds.width, height: Constants.searchBarHeight
         )
-        uiPrevMaxY += Constants.headerViewHeight + 20
+        uiPrevMaxY += searchBar.frame.maxY + 12
         
         searchResultsCollectionView.frame = CGRect(
             x: 0, y: uiPrevMaxY,

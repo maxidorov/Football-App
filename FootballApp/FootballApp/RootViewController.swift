@@ -13,12 +13,12 @@ class RootViewController: UITabBarController {
         static let searchVCTitle: String = "Search"
     }
     
-    lazy var mainViewController: UIViewController = {
+    private var mainViewController: UIViewController = {
         let vc = MainViewController()
         vc.title = Constants.mainVCTitle
         return vc
     } ()
-    lazy var searchViewController: UIViewController = {
+    private var searchViewController: UIViewController = {
         let vc = SearchViewController()
         vc.title = Constants.searchVCTitle
         return vc
@@ -27,7 +27,7 @@ class RootViewController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        self.setViewControllers([mainViewController, searchViewController], animated: false)
+        setViewControllers([mainViewController, searchViewController], animated: false)
         guard let items = self.tabBar.items else { return }
         for i in 0...1 {
             items[i].image = UIImage(systemName: ["house", "magnifyingglass"][i])

@@ -15,7 +15,6 @@
 		890E668B27612A4100DF3A6B /* FakeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890E668A27612A4100DF3A6B /* FakeCollectionViewCell.swift */; };
 		890E668D276145CD00DF3A6B /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890E668C276145CD00DF3A6B /* RootViewController.swift */; };
 		890E668F276151B500DF3A6B /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890E668E276151B500DF3A6B /* SearchViewController.swift */; };
-		890E66912761580200DF3A6B /* SearchHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890E66902761580200DF3A6B /* SearchHeaderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,7 +28,6 @@
 		890E668A27612A4100DF3A6B /* FakeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeCollectionViewCell.swift; sourceTree = "<group>"; };
 		890E668C276145CD00DF3A6B /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		890E668E276151B500DF3A6B /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
-		890E66902761580200DF3A6B /* SearchHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchHeaderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,7 +65,6 @@
 				34B0EE3A2761144800777E12 /* SceneDelegate.swift */,
 				890E668C276145CD00DF3A6B /* RootViewController.swift */,
 				890E668E276151B500DF3A6B /* SearchViewController.swift */,
-				890E66902761580200DF3A6B /* SearchHeaderView.swift */,
 				34B0EE3C2761144800777E12 /* MainViewController.swift */,
 				34B0EE412761144A00777E12 /* Assets.xcassets */,
 				34B0EE432761144A00777E12 /* LaunchScreen.storyboard */,
@@ -154,7 +151,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				890E66912761580200DF3A6B /* SearchHeaderView.swift in Sources */,
 				890E668F276151B500DF3A6B /* SearchViewController.swift in Sources */,
 				890E668D276145CD00DF3A6B /* RootViewController.swift in Sources */,
 				34B0EE3D2761144800777E12 /* MainViewController.swift in Sources */,
