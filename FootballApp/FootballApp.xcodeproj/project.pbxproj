@@ -15,6 +15,8 @@
 		890E668B27612A4100DF3A6B /* FakeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890E668A27612A4100DF3A6B /* FakeCollectionViewCell.swift */; };
 		890E668D276145CD00DF3A6B /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890E668C276145CD00DF3A6B /* RootViewController.swift */; };
 		890E668F276151B500DF3A6B /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890E668E276151B500DF3A6B /* SearchViewController.swift */; };
+		E0905F3E2762239A008D1616 /* MatchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0905F3D2762239A008D1616 /* MatchCell.swift */; };
+		E0905F4327622450008D1616 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0905F4227622450008D1616 /* UIView+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		890E668A27612A4100DF3A6B /* FakeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeCollectionViewCell.swift; sourceTree = "<group>"; };
 		890E668C276145CD00DF3A6B /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		890E668E276151B500DF3A6B /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		E0905F3D2762239A008D1616 /* MatchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchCell.swift; sourceTree = "<group>"; };
+		E0905F4227622450008D1616 /* UIView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +70,8 @@
 				890E668C276145CD00DF3A6B /* RootViewController.swift */,
 				890E668E276151B500DF3A6B /* SearchViewController.swift */,
 				34B0EE3C2761144800777E12 /* MainViewController.swift */,
+				E0905F3D2762239A008D1616 /* MatchCell.swift */,
+				E0905F4127622450008D1616 /* Extensions */,
 				34B0EE412761144A00777E12 /* Assets.xcassets */,
 				34B0EE432761144A00777E12 /* LaunchScreen.storyboard */,
 				34B0EE462761144A00777E12 /* Info.plist */,
@@ -79,6 +85,14 @@
 				890E668A27612A4100DF3A6B /* FakeCollectionViewCell.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		E0905F4127622450008D1616 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E0905F4227622450008D1616 /* UIView+Extension.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -153,8 +167,10 @@
 			files = (
 				890E668F276151B500DF3A6B /* SearchViewController.swift in Sources */,
 				890E668D276145CD00DF3A6B /* RootViewController.swift in Sources */,
+				E0905F4327622450008D1616 /* UIView+Extension.swift in Sources */,
 				34B0EE3D2761144800777E12 /* MainViewController.swift in Sources */,
 				890E668B27612A4100DF3A6B /* FakeCollectionViewCell.swift in Sources */,
+				E0905F3E2762239A008D1616 /* MatchCell.swift in Sources */,
 				34B0EE392761144800777E12 /* AppDelegate.swift in Sources */,
 				34B0EE3B2761144800777E12 /* SceneDelegate.swift in Sources */,
 			);
