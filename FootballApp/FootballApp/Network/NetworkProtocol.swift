@@ -8,9 +8,9 @@
 import Foundation
 
 protocol NetworkProtocol {
-    func search<T>(item: T.Type,  withName: String, completionHandler: @escaping (Result<[T], Error>) -> Void) where T: (Decodable & RequestIdentifier)
-    func searchMatches(byTeam: Team, completionHandler: @escaping (Result<[Match], Error>) -> Void)
-    func searchMatches(byPlayer: Player, completionHandler: @escaping (Result<[Match], Error>) -> Void)
-    func searchTeams(byPlayer: Player, completionHandler: @escaping (Result<[Team], Error>) -> Void)
-    func searchMatches<T>(by: [T], completionHandler: @escaping (Result<[Match], Error>) -> Void)
+    func search<T>(item: T.Type,  withName: String, completion: @escaping (Result<[T], Error>) -> Void) where T: (Decodable & RequestIdentifier)
+    func searchMatches(byTeam: Team, completion: @escaping (Result<[Match], Error>) -> Void)
+    func searchMatches(byPlayer: Player, completion: @escaping (Result<[Match], Error>) -> Void)
+    func searchTeams(byPlayer: Player, completion: @escaping (Result<[Team], Error>) -> Void)
+    func searchMatches<T>(by: [T], completion: @escaping (Result<[Match], Error>) -> Void)
 }
