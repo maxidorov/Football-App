@@ -35,7 +35,6 @@ class RootViewController: UITabBarController {
         }
         self.tabBar.tintColor = .systemBlue
     }
-
 }
 
 extension RootViewController: UITabBarControllerDelegate {
