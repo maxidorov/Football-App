@@ -18,6 +18,9 @@ class MainViewController: UIViewController {
         // UI Constants
         static let headerViewHeight: CGFloat = 120
         static let bottomBarHeight: CGFloat = 80
+        
+        // Other
+        static let tabBarTitle = "Mathches"
     }
     
     private lazy var matchesCollectionView: UICollectionView = {
@@ -30,6 +33,8 @@ class MainViewController: UIViewController {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         return view
     } ()
+    
+    var mainViewPresenter: MainViewPresenter?
 
     private var headerView: UIView = UIView()
 
@@ -41,9 +46,11 @@ class MainViewController: UIViewController {
     }()
     
     private lazy var fakeItems: [String] = (1...100).map { i -> String in return "Cell #\(i)"}
+    private var matches: [Match] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = Constants.tabBarTitle
         
         [
             headerView, matchesCollectionView, bottomBar,
@@ -56,7 +63,8 @@ class MainViewController: UIViewController {
             MatchCell.self,
             forCellWithReuseIdentifier: Constants.matchCellId
         )
-        matchesCollectionView.reloadData()
+        
+        mainViewPresenter?.viewDidLoad()
     }
     
     override func viewWillLayoutSubviews() {
@@ -90,14 +98,31 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        fakeItems.count
+        matches.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = matchesCollectionView.dequeueReusableCell(
             withReuseIdentifier: Constants.matchCellId, for: indexPath
         ) as! MatchCell
-        cell.fakeConfigure()
+        cell.configure(matches[indexPath.row])
         return cell
     }
+}
+
+// MARK: - MainView Protocol
+
+protocol MainView: AnyObject {
+    func onMatchesChanged(matches: [Match])
+}
+
+extension MainViewController: MainView {
+    
+    func onMatchesChanged(matches: [Match]) {        
+        self.matches = matches
+        DispatchQueue.main.async {
+            self.matchesCollectionView.reloadData()
+        }
+    }
+    
 }
