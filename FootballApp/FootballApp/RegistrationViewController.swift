@@ -22,9 +22,9 @@ final class RegistrationViewController: UIViewController {
         static let separatorHeight: CGFloat = 1
     }
     
-    lazy var logo = UIImage(named: "logo")
-    lazy var logoView = UIImageView(image: logo)
-    lazy private var signInButton : UIView = {
+    private lazy var logo = UIImage(named: "logo")
+    private lazy var logoView = UIImageView(image: logo)
+    private lazy var signInButton : UIButton = {
         let button = UIButton()
         button.backgroundColor = AppColors.darkGreyColor
         button.layer.cornerRadius = 16
@@ -35,7 +35,7 @@ final class RegistrationViewController: UIViewController {
         return button
     }()
     
-    lazy private var signInLabel : UILabel = {
+    private lazy var signInLabel : UILabel = {
         let text = "Don’t have an account? Create account"
         let attributedString = NSMutableAttributedString(string: text)
         let range = (text as NSString).range(of: "Create account")
@@ -53,36 +53,25 @@ final class RegistrationViewController: UIViewController {
         return label
     }()
     
-    lazy var emailTextField : UITextField = {
+    func makeTextField(placeholder: String) -> UITextField {
         let emailText = UITextField()
         emailText.font = UIFont.systemFont(ofSize: 17)
-        emailText.placeholder = "Email"
-    
+        emailText.placeholder = placeholder
+
         return emailText
-    }()
+    }
     
-    lazy var passwordTextField : UITextField = {
-        let passText = UITextField()
-        passText.font = UIFont.systemFont(ofSize: 17)
-        passText.placeholder = "Password"
-        
-        return passText
-    }()
+    private lazy var emailTextField = makeTextField(placeholder: "Email")
     
-    lazy var separators : [UIView] = {
-        var separators : [UIView] = []
-        
-        for i in 0...1 {
-            let separator = UIView()
-            separator.backgroundColor = AppColors.lightGreyColor
-            
-            separators.append(separator)
-        }
-        
-        return separators
-    }()
+    private lazy var passwordTextField = makeTextField(placeholder: "Password")
     
-    lazy var inpView : UIView = {
+    private lazy var separators = (0...1).map { _ -> UIView in
+        let separator = UIView()
+        separator.backgroundColor = AppColors.lightGreyColor
+        return separator
+    }
+    
+    private lazy var inpView : UIView = {
         let view = UIView()
         view.backgroundColor = .clear
             
@@ -98,10 +87,10 @@ final class RegistrationViewController: UIViewController {
         
         view.addSubview(inpView)
         
-        inpView.addSubview(emailTextField)
-        inpView.addSubview(separators[0])
-        inpView.addSubview(passwordTextField)
-        inpView.addSubview(separators[1])
+        inpView.addSubviews(emailTextField,
+                            separators[0],
+                            passwordTextField,
+                            separators[1])
     }
     
     override func viewDidLayoutSubviews() {
@@ -112,7 +101,7 @@ final class RegistrationViewController: UIViewController {
         layoutInpView()
     }
     
-    func layoutSignInLabel() {
+    private func layoutSignInLabel() {
         signInLabel.frame = CGRect(
             x: 0, y: view.safeAreaLayoutGuide.layoutFrame.size.height
                 - Constants.standardIndent,
@@ -123,7 +112,7 @@ final class RegistrationViewController: UIViewController {
         signInLabel.center.x = view.center.x
     }
     
-    func layoutSignInButton() {
+    private func layoutSignInButton() {
         signInButton.frame = CGRect(
             x: 0, y: signInLabel.frame.minY
                 - Constants.standardIndent
@@ -136,7 +125,7 @@ final class RegistrationViewController: UIViewController {
         signInButton.center.x = view.center.x
     }
     
-    func layoutInpView() {
+    private func layoutInpView() {
         inpView.frame = CGRect(
             x: 0, y: 0,
             width: view.safeAreaLayoutGuide.layoutFrame.size.width
@@ -170,17 +159,17 @@ final class RegistrationViewController: UIViewController {
             width: inpView.frame.width, height: 1)
     }
     
-    @objc func loginButtonPressed() -> Void {
+    @objc private func loginButtonPressed() {
         signInButton.backgroundColor = AppColors.darkGreyColor
         
         // MARK:- Logging in logic
     }
     
-    @objc func loginButtonHover() -> Void {
+    @objc private func loginButtonHover() {
         signInButton.backgroundColor = AppColors.lightGreyColor
     }
     
-    @objc func createAccountTapped(gesture: UITapGestureRecognizer) -> Void {
+    @objc private func createAccountTapped(gesture: UITapGestureRecognizer) -> Void {
         let text = "Don’t have an account?  Create account"
         let range = (text as NSString).range(of: "Create account")
         
@@ -193,7 +182,7 @@ final class RegistrationViewController: UIViewController {
     }
 }
 
-extension UITapGestureRecognizer {
+private extension UITapGestureRecognizer {
 
     func didTapAttributedTextInLabel(label: UILabel, inRange targetRange: NSRange) -> Bool {
             // Create instances of NSLayoutManager, NSTextContainer and NSTextStorage
