@@ -11,9 +11,9 @@ class MainViewController: UIViewController {
     private enum Constants {
         // CV = collectionView
         static let CVMatchesSectionsNumber: Int = 1
-        static let CVFakeCellId: String = FakeCollectionViewCell.identifier
-        static let fakeCellMargin: CGFloat = 10
-        static let fakeCellHeight: CGFloat = FakeCollectionViewCell.cellHeight
+        static let matchCellId: String = MatchCell.Constants.identifier
+        static let matchCellMargin: CGFloat = 16
+        static let matchCellHeight: CGFloat = MatchCell.Constants.cellHeight
         
         // UI Constants
         static let headerViewHeight: CGFloat = 120
@@ -23,8 +23,8 @@ class MainViewController: UIViewController {
     private lazy var matchesCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(
-            width: view.frame.width - 2 * Constants.fakeCellMargin,
-            height: Constants.fakeCellHeight
+            width: view.frame.width - 2 * Constants.matchCellMargin,
+            height: Constants.matchCellHeight
         )
         layout.scrollDirection = .vertical
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -35,7 +35,7 @@ class MainViewController: UIViewController {
 
     private var bottomBar: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemGreen
+        view.backgroundColor = .systemBackground
         view.isHidden = true
         return view
     }()
@@ -53,8 +53,8 @@ class MainViewController: UIViewController {
         matchesCollectionView.delegate = self
         matchesCollectionView.dataSource = self
         matchesCollectionView.register(
-            FakeCollectionViewCell.self,
-            forCellWithReuseIdentifier: Constants.CVFakeCellId
+            MatchCell.self,
+            forCellWithReuseIdentifier: Constants.matchCellId
         )
         matchesCollectionView.reloadData()
     }
@@ -95,9 +95,9 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = matchesCollectionView.dequeueReusableCell(
-            withReuseIdentifier: Constants.CVFakeCellId, for: indexPath
-        ) as! FakeCollectionViewCell
-        cell.configure(text: fakeItems[indexPath.row])
+            withReuseIdentifier: Constants.matchCellId, for: indexPath
+        ) as! MatchCell
+        cell.fakeConfigure()
         return cell
     }
 }
