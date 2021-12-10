@@ -8,10 +8,13 @@
 import UIKit
 
 final class MatchCell: UICollectionViewCell {
+    enum Constants {
+        static let cellHeight: CGFloat = 150
+        static let identifier = "MatchCell"        
+    }
     
     // MARK: - public properties
     
-    static var identifier = "MatchCell"
     
     lazy var firstTeamImageView: UIImageView = makeTeamImageView()
     
@@ -51,7 +54,7 @@ final class MatchCell: UICollectionViewCell {
                                 dateLabel,
                                 scoreLabel)
         
-        contentView.backgroundColor = .white
+        contentView.backgroundColor = .secondarySystemBackground
         contentView.layer.cornerRadius = 20
     }
     
@@ -73,31 +76,44 @@ final class MatchCell: UICollectionViewCell {
     // MARK: - public funcs
     
     // Эту функцию будем переписывать после определения модели
-    func configureWithModel(firstName: String,
-                  firstLogo: UIImage?,
-                  secondName: String,
-                  secondLogo: UIImage?,
-                  dateEvent: String,
-                  score: String) {
-        firstTeamImageView.image = firstLogo
-        secondTeamImageView.image = secondLogo
-        firstTeamLabel.text = firstName
-        secondTeamLabel.text = secondName
-        dateLabel.text = dateEvent
-        scoreLabel.text = score
+    func configure(_ withModel: Match) {
+        firstTeamImageView.image = UIImage()
+        secondTeamImageView.image = UIImage()
+        firstTeamLabel.text = withModel.homeTeam.name
+        secondTeamLabel.text = withModel.awayTeam.name
+        dateLabel.text = withModel.startAt
+        scoreLabel.text = "2 : 0"
+    }
+    
+    func fakeConfigure() {
+        firstTeamImageView.image = UIImage()
+        secondTeamImageView.image = UIImage()
+        firstTeamLabel.text = "Team 1"
+        secondTeamLabel.text = "Team 2"
+        dateLabel.text = "10/12/2021"
+        scoreLabel.text = "2 : 0"
+    }
+    
+    override func prepareForReuse() {
+        firstTeamImageView.image = UIImage()
+        secondTeamImageView.image = UIImage()
+        firstTeamLabel.text = nil
+        secondTeamLabel.text = nil
+        dateLabel.text = nil
+        scoreLabel.text = nil
     }
     
     // MARK: - private funcs
     
     private func layoutImageLabels() {
-        let quoterHeight = contentView.bounds.height/2
+        let quoterHeight = contentView.bounds.height / 2
         firstTeamImageView.frame = CGRect(x: 0, y: 0, width: quoterHeight, height: quoterHeight)
         secondTeamImageView.frame = CGRect(x: 0, y: 0, width: quoterHeight, height: quoterHeight)
         
-        firstTeamImageView.layer.cornerRadius = firstTeamImageView.bounds.height/2
-        secondTeamImageView.layer.cornerRadius = secondTeamImageView.bounds.height/2
+        firstTeamImageView.layer.cornerRadius = firstTeamImageView.bounds.height / 2
+        secondTeamImageView.layer.cornerRadius = secondTeamImageView.bounds.height / 2
         
-        firstTeamImageView.center = CGPoint(x: contentView.center.x/2,
+        firstTeamImageView.center = CGPoint(x: contentView.center.x / 2,
                                             y: contentView.center.y - 20)
         secondTeamImageView.center = CGPoint(x: contentView.center.x * 1.5,
                                              y: contentView.center.y - 20)
@@ -123,7 +139,7 @@ final class MatchCell: UICollectionViewCell {
     
     private func layoutDateLabel() {
         dateLabel.frame = CGRect(origin: CGPoint(x: 0, y: 0),
-                                 size: CGSize(width: contentView.frame.width/8, height: 12))
+                                 size: CGSize(width: contentView.frame.width / 8, height: 12))
         dateLabel.center = CGPoint(x: contentView.center.x,
                                    y: firstTeamImageView.frame.maxY + 0.1 * contentView.bounds.height)
     }
