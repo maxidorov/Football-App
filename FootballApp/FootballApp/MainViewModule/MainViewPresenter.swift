@@ -37,12 +37,31 @@ class MainViewPresenter: MainViewPresenterProtocol {
         
         network.searchMatches(by: subscribedEntities, completion: { result in
             switch result {
-            case .success(let ms):
-                self.mathces = ms.sorted(by: { $0.startAt ?? "" > $1.startAt ?? "" })
+            case .success(let matches):
+                self.mathces = self.filterMatches(matches)
             case .failure(let err):
                 debugPrint(err)
             }
         })
+    }
+    
+    private func filterMatches(_ ms: [Match]) -> [Match] {
+        var array = ms.sorted(by: { $0.startAt ?? "" > $1.startAt ?? "" })
+        let calendar = Calendar.current
+        globalDateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+
+        array = array.filter { match in
+            guard
+                let dateString = match.startAt,
+                let date = globalDateFormatter.date(from: dateString) else {
+                return false
+            }
+         
+            // date - now <= 7
+            let components = calendar.dateComponents([.day], from: Date(), to: date)
+            return  components.day.map { $0 <= 7 } ?? false
+        }
+        return array
     }
     
     private func matchesChanged() {

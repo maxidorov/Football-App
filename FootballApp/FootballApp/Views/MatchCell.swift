@@ -10,8 +10,12 @@ import UIKit
 final class MatchCell: UICollectionViewCell {
     enum Constants {
         static let cellHeight: CGFloat = 150
-        static let identifier = "MatchCell"        
+        static let identifier = "MatchCell"
+        static let dateLabelPlaceholder = "--/--/--"
+        static let timeLabelPlaceholder = "--:--"
+        static let scoreLabelPlaceholder = "- : -"
     }
+    
     
     // MARK: - public properties
     
@@ -28,17 +32,25 @@ final class MatchCell: UICollectionViewCell {
     
     var configurationModel: Match? = nil
     
-    lazy var dateLabel: UILabel = {
+    private lazy var timeLabel: UILabel = {
+        let timeLabel = UILabel()
+        timeLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        timeLabel.textAlignment = .center
+        timeLabel.adjustsFontSizeToFitWidth = true
+        timeLabel.minimumScaleFactor = 0.5
+        return timeLabel
+    }()
+    
+    private lazy var dateLabel: UILabel = {
         let dateLabel = UILabel()
-        dateLabel.font = UIFont.systemFont(ofSize: 10, weight: .light)
+        dateLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         dateLabel.textAlignment = .center
         dateLabel.adjustsFontSizeToFitWidth = true
         dateLabel.minimumScaleFactor = 0.5
-        dateLabel.textColor = .black
         return dateLabel
     }()
     
-    lazy var scoreLabel: UILabel = {
+    private lazy var scoreLabel: UILabel = {
         let scoreLabel = UILabel()
         scoreLabel.font = UIFont.systemFont(ofSize: 50, weight: .regular)
         scoreLabel.textAlignment = .center
@@ -56,6 +68,7 @@ final class MatchCell: UICollectionViewCell {
             secondTeamImageView,
             firstTeamLabel,
             secondTeamLabel,
+            timeLabel,
             dateLabel,
             scoreLabel
         )
@@ -77,6 +90,7 @@ final class MatchCell: UICollectionViewCell {
         layoutTeamLabels()
         layoutDateLabel()
         layoutScoreLabel()
+        layoutTimeLabel()
     }
     
     // MARK: - Public methods
@@ -97,8 +111,15 @@ final class MatchCell: UICollectionViewCell {
         
         firstTeamLabel.text = withModel.homeTeam.shortName ?? withModel.name
         secondTeamLabel.text = withModel.awayTeam.shortName ?? withModel.name
-        dateLabel.text = withModel.startAt
-        scoreLabel.text = "2 : 0"
+        timeLabel.text = withModel.startAt?.toTime
+        dateLabel.text = withModel.startAt?.toDate
+        
+        scoreLabel.text = Constants.scoreLabelPlaceholder
+        if
+            let homeScore = withModel.homeScore?.display,
+            let awayScore = withModel.awayScore?.display {
+            scoreLabel.text = "\(homeScore) : \(awayScore)"
+        }
     }
     
     override func prepareForReuse() {
@@ -116,24 +137,6 @@ final class MatchCell: UICollectionViewCell {
     
     // MARK: - Private methods
     
-    private func layoutImageLabels() {
-        let quoterHeight = contentView.bounds.height / 2
-        firstTeamImageView.frame = CGRect(x: 0, y: 0, width: quoterHeight, height: quoterHeight)
-        secondTeamImageView.frame = CGRect(x: 0, y: 0, width: quoterHeight, height: quoterHeight)
-        
-        firstTeamImageView.layer.cornerRadius = firstTeamImageView.bounds.height / 2
-        secondTeamImageView.layer.cornerRadius = secondTeamImageView.bounds.height / 2
-        
-        firstTeamImageView.center = CGPoint(
-            x: contentView.center.x / 2,
-            y: contentView.center.y - 20
-        )
-        secondTeamImageView.center = CGPoint(
-            x: contentView.center.x * 1.5,
-            y: contentView.center.y - 20
-        )
-    }
-    
     private func loadImage(_ with: String?, completion: @escaping(UIImage?) -> Void) {
         imageLoader.loadImage(with: with, completion: { result in
             switch result  {
@@ -147,6 +150,23 @@ final class MatchCell: UICollectionViewCell {
                 }
             }
         })
+    }
+    
+    // MARK: - Private methods: UI
+    
+    private func layoutImageLabels() {
+        let quoterHeight = contentView.bounds.height / 2
+        firstTeamImageView.frame = CGRect(origin: .zero, size: CGSize(width: quoterHeight, height: quoterHeight))
+        secondTeamImageView.frame = CGRect(origin: .zero, size: CGSize(width: quoterHeight, height: quoterHeight))
+        
+        firstTeamImageView.center = CGPoint(
+            x: contentView.center.x / 2,
+            y: contentView.center.y - 20
+        )
+        secondTeamImageView.center = CGPoint(
+            x: contentView.center.x * 1.5,
+            y: contentView.center.y - 20
+        )
     }
     
     private func layoutTeamLabels() {
@@ -175,9 +195,22 @@ final class MatchCell: UICollectionViewCell {
         secondTeamLabel.center = secondTeamLabelCenter
     }
     
+    
+    private func layoutTimeLabel() {
+        // Position of this label is not final
+        timeLabel.frame = CGRect(
+            origin: .zero,
+            size: CGSize(width: contentView.frame.width / 8, height: 12)
+        )
+        timeLabel.center = CGPoint(
+            x: contentView.center.x,
+            y: firstTeamImageView.frame.minY + 0.05 * contentView.bounds.height
+        )
+    }
+    
     private func layoutDateLabel() {
         dateLabel.frame = CGRect(
-            origin: CGPoint(x: 0, y: 0),
+            origin: .zero,
             size: CGSize(width: contentView.frame.width / 8, height: 12)
         )
         dateLabel.center = CGPoint(
@@ -188,9 +221,12 @@ final class MatchCell: UICollectionViewCell {
     
     private func layoutScoreLabel() {
         scoreLabel.frame = CGRect(
-            x: 0, y: 0,
-            width: secondTeamImageView.frame.minX - firstTeamImageView.frame.maxX - 10,
-            height: firstTeamImageView.frame.height
+            origin: .zero,
+            size: CGSize(
+                width: secondTeamImageView.frame.minX - firstTeamImageView.frame.maxX - 10,
+                height: firstTeamImageView.frame.height
+            )
+            
         )
         scoreLabel.center = CGPoint(x: contentView.center.x, y: firstTeamImageView.center.y)
     }
