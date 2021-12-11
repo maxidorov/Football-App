@@ -7,6 +7,8 @@
 
 import Foundation
 
+let globalDateFormatter = DateFormatter()
+
 extension String {
     var url: URL? {
         URL(string: self)
@@ -16,5 +18,29 @@ extension String {
 extension Optional where Wrapped == String {
     var url: URL? {
         URL(string: self ?? "")
+    }
+}
+
+extension String {
+    var toDate: String {
+        globalDateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        globalDateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        guard let date = globalDateFormatter.date(from: self) else {
+            return MatchCell.Constants.dateLabelPlaceholder
+        }
+        globalDateFormatter.dateFormat = "dd/MM/YY"
+        globalDateFormatter.timeZone = .current
+        return globalDateFormatter.string(from: date)
+    }
+    
+    var toTime: String {
+        globalDateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        globalDateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        guard let date = globalDateFormatter.date(from: self) else {
+            return MatchCell.Constants.timeLabelPlaceholder
+        }
+        globalDateFormatter.dateFormat = "HH:mm"
+        globalDateFormatter.timeZone = .current
+        return globalDateFormatter.string(from: date)
     }
 }
