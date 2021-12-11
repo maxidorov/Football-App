@@ -38,7 +38,7 @@ class MainViewPresenter: MainViewPresenterProtocol {
         network.searchMatches(by: subscribedEntities, completion: { result in
             switch result {
             case .success(let ms):
-                self.mathces = ms
+                self.mathces = ms.sorted(by: { $0.startAt ?? "" > $1.startAt ?? "" })
             case .failure(let err):
                 debugPrint(err)
             }
