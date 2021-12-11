@@ -21,6 +21,11 @@ class RootViewController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if let apiK = KeychainService.getDataFromKeychainByKey(key: "api-key") {
+            print(String(decoding: apiK, as: UTF8.self))
+        }
+        
         view.backgroundColor = .systemBackground
         setViewControllers([mainViewController, searchViewController], animated: false)
         guard let items = self.tabBar.items else { return }

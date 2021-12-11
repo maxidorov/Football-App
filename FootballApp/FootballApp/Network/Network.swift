@@ -12,10 +12,17 @@ class Network: NetworkProtocol {
     public enum Constants {
         static let headers = [
             "x-rapidapi-host": "sportscore1.p.rapidapi.com",
-            "x-rapidapi-key": "c9b4cb4ee8msh962972f210927cep135288jsn196736e1ed38"
+            "x-rapidapi-key": apiKey
         ]
+        
         static let host: String = "football-pro.p.rapidapi.com"
-        static let apiKey: String = "c9b4cb4ee8msh962972f210927cep135288jsn196736e1ed38"
+        static let apiKey: String = {
+            if let apiK = KeychainService.getDataFromKeychainByKey(key: "api-key") {
+                return String(decoding: apiK, as: UTF8.self)
+            } else {
+                return ""
+            }
+        }()
         static let domainUrl: String = "https://sportscore1.p.rapidapi.com"
         static let sportId: String = "1"
     }
