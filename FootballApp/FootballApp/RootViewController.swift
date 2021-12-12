@@ -8,14 +8,8 @@
 import UIKit
 
 class RootViewController: UITabBarController {
-    private enum Constants {
-        static let mainVCTitle: String = "Matches"
-        static let searchVCTitle: String = "Search"
-    }
-    
     private var mainViewController: UIViewController = {
-        let vc = MainViewController()
-        vc.title = Constants.mainVCTitle
+        let vc = MainViewAssembly.createModule()
         return vc
     } ()
   

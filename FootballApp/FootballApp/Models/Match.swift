@@ -14,11 +14,15 @@ struct Match: Decodable {
     let awayTeam: Team
     let status: String?
     let startAt: String?
+    let homeScore: Score?
+    let awayScore: Score?
     
     enum CodingKeys: String, CodingKey {
         case id, name, status
         case homeTeam = "home_team"
         case awayTeam = "away_team"
+        case awayScore = "away_score"
+        case homeScore = "home_score"
         case startAt = "start_at"
     }
 }
@@ -33,3 +37,5 @@ extension Match: Hashable {
     }
     
 }
+
+
