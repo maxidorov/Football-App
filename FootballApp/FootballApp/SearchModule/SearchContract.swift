@@ -14,4 +14,5 @@ protocol SearchPresenterProtocol: AnyObject {
 
 protocol SearchViewProtocol: AnyObject {
     func presentModel()
+    var selectedSegment: Int { get }
 }

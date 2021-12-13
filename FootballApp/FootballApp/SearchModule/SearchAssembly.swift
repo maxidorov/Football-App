@@ -15,6 +15,7 @@ class SearchAssembly {
         
         viewController.presenter = presenter
         presenter.view = viewController
+        presenter.network = Network()
         
         return navigationController
     }

@@ -7,7 +7,14 @@
 
 import UIKit
 
+enum SearchModelType {
+    case player
+    case team
+}
+
 struct SearchModel {
-    var title: String = ""
-    var image: UIImage?
+    let type: SearchModelType
+    
+    let id: Int
+    let name: String
 }
