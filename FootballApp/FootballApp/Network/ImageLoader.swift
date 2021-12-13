@@ -8,8 +8,13 @@
 import UIKit
 
 class ImageLoader: ImageLoaderProtocol {
+    
+    static var shared: ImageLoader = ImageLoader()
+    
     private let loadedImages = NSCache<NSURL, UIImage>()
     private var runningRequests = [URL: URLSessionDataTask]()
+    
+    private init() {}
     
     func loadImage(with urlString: String?, completion: @escaping (Result<UIImage, Error>) -> Void) {
         guard let url = urlString?.url else {
