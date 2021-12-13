@@ -11,7 +11,7 @@ class SearchAssembly {
     static func createSearchModule() -> UIViewController {
         let viewController = SearchViewController()
         let navigationController = UINavigationController(rootViewController: viewController)
-        let presenter = SearchPresenter()
+        let presenter = SearchPresenter(network:  Network())
         
         viewController.presenter = presenter
         presenter.view = viewController

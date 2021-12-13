@@ -10,24 +10,15 @@ import Foundation
 class SearchPresenter: SearchPresenterProtocol {
     weak var view: SearchViewProtocol?
     var models: [SearchModel] = []
-    
-
-    private var mockModels = [
-        SearchModel(title: "Роналдиньо", image: nil),
-        SearchModel(title: "Роналдо", image: nil),
-        SearchModel(title: "Роналдо Зубастик", image: nil),
-        SearchModel(title: "Рон Уизли", image: nil),
-        SearchModel(title: "Роман Абрамович", image: nil),
-        SearchModel(title: "Рональд Куман", image: nil),
-        SearchModel(title: "Маркус Рэшфорд", image: nil),
-        SearchModel(title: "Рональд Макдонаьлд", image: nil),
-        SearchModel(title: "Романцев", image: nil),
-        SearchModel(title: "Ривалдо", image: nil),
-    ]
+    var network: NetworkProtocol
     
     private var searchWorkItem: DispatchWorkItem?
     
     // MARK: - Public methods
+    
+    init(network: NetworkProtocol) {
+        self.network = network
+    }
     
     func didTypeSearch(string: String) {
         searchWorkItem?.cancel()
@@ -38,21 +29,50 @@ class SearchPresenter: SearchPresenterProtocol {
             return
         }
         
-        models = mockModels.filter({ (model) -> Bool in
-            let searchText = string.lowercased()
-            return model.title.lowercased().contains(searchText)
-        })
-        
+        guard let selectedSegment = view?.selectedSegment else { return }
         let searchWorkItem = DispatchWorkItem { [weak self] in
-            self?.view?.presentModel()
+            switch selectedSegment {
+            case .player:
+                self?.performSearchPlayers(for: string)
+            case .team:
+                self?.performSearchTeams(for: string)
+            default:
+                break
+            }
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(330), execute: searchWorkItem)
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(330), execute: searchWorkItem)
         
         self.searchWorkItem = searchWorkItem
     }
     
-    func configureCell(cell: SearchItemCell) {
-        
+    // MARK: - private methods
+    
+    private func performSearchPlayers(for name: String) {
+        self.network.search(item: Player.self, withName: name, completion: { (result) in
+            switch result {
+            case .success(let players):
+                self.models = players.map { player in
+                    SearchModel(type: .player, id: player.id, name: player.name)
+                }
+                self.view?.presentModel()
+            case .failure(let error):
+                print(error)
+            }
+        })
+    }
+    
+    private func performSearchTeams(for name: String) {
+        self.network.search(item: Team.self, withName: name, completion: { (result) in
+            switch result {
+            case .success(let teams):
+                self.models = teams.map({ (team) -> SearchModel in
+                    return SearchModel(type: .team, id: team.id, name: team.name)
+                })
+                self.view?.presentModel()
+            case .failure(let error):
+                print(error)
+            }
+        })
     }
 }

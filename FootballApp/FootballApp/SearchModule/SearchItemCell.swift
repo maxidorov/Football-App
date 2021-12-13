@@ -81,7 +81,6 @@ final class SearchItemCell: UICollectionViewCell {
     // MARK: - Public methods
     
     func configureWithModel(model: SearchModel) {
-        titleLabel.text = model.title
-        imageView.image = model.image
+        titleLabel.text = model.name
     }
 }

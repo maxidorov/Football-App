@@ -26,23 +26,40 @@ class SearchViewController: UIViewController {
     
     private lazy var searchController = UISearchController(searchResultsController: nil)
     
+    private lazy var searchTypeSegmentControl: UISegmentedControl = {
+        let searchTypeSegmentControll = UISegmentedControl(frame: .zero)
+        searchTypeSegmentControll.insertSegment(withTitle: "Игроки", at: 0, animated: false)
+        searchTypeSegmentControll.insertSegment(withTitle: "Команды", at: 1, animated: false)
+        searchTypeSegmentControll.selectedSegmentIndex = 0
+        searchTypeSegmentControll.translatesAutoresizingMaskIntoConstraints = false
+        return searchTypeSegmentControll
+    }()
+    
     // MARK: - Override methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = Constants.tabBarTitle
+        
         navigationItem.largeTitleDisplayMode = .automatic
         navigationController?.navigationBar.prefersLargeTitles = true
-        view.addSubview(collectionView)
+        view.addSubviews(collectionView, searchTypeSegmentControl)
         
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.751727879, green: 0.7929214835, blue: 0.845862329, alpha: 1)]
         
         setupSearchController()
+        setupSegmentControll()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        collectionView.frame = view.bounds
+        
+        let collectionViewHeight = view.frame.height - searchTypeSegmentControl.frame.maxY
+        collectionView.frame = CGRect(x: 0,
+                                      y: searchTypeSegmentControl.frame.maxY,
+                                      width: view.frame.width,
+                                      height: collectionViewHeight)
         
     }
 
@@ -56,13 +73,33 @@ class SearchViewController: UIViewController {
         navigationItem.searchController = searchController
         definesPresentationContext = true
     }
+    
+    private func setupSegmentControll() {
+        NSLayoutConstraint.activate([searchTypeSegmentControl.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9),
+                                     searchTypeSegmentControl.heightAnchor.constraint(equalToConstant: 31),
+                                     searchTypeSegmentControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                                     searchTypeSegmentControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 3)])
+    }
 }
 
 // MARK: - SearchViewProtocol
 
 extension SearchViewController: SearchViewProtocol {
     func presentModel() {
-        collectionView.reloadData()
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
+    }
+    
+    var selectedSegment: SearchModelType {
+        switch searchTypeSegmentControl.selectedSegmentIndex {
+        case 0:
+            return .player
+        case 1:
+            return .team
+        default:
+            return .unkown
+        }
     }
 }
 
