@@ -10,11 +10,15 @@ import Foundation
 class SearchPresenter: SearchPresenterProtocol {
     weak var view: SearchViewProtocol?
     var models: [SearchModel] = []
-    var network: NetworkProtocol?
+    var network: NetworkProtocol
     
     private var searchWorkItem: DispatchWorkItem?
     
     // MARK: - Public methods
+    
+    init(network: NetworkProtocol) {
+        self.network = network
+    }
     
     func didTypeSearch(string: String) {
         searchWorkItem?.cancel()
@@ -27,14 +31,17 @@ class SearchPresenter: SearchPresenterProtocol {
         
         guard let selectedSegment = view?.selectedSegment else { return }
         let searchWorkItem = DispatchWorkItem { [weak self] in
-            if selectedSegment == 0 {
+            switch selectedSegment {
+            case .player:
                 self?.performSearchPlayers(for: string)
-            } else {
+            case .team:
                 self?.performSearchTeams(for: string)
+            default:
+                break
             }
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(330), execute: searchWorkItem)
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(330), execute: searchWorkItem)
         
         self.searchWorkItem = searchWorkItem
     }
@@ -42,29 +49,29 @@ class SearchPresenter: SearchPresenterProtocol {
     // MARK: - private methods
     
     private func performSearchPlayers(for name: String) {
-        self.network?.search(item: Player.self, withName: name, completion: { (result) in
+        self.network.search(item: Player.self, withName: name, completion: { (result) in
             switch result {
-                case .success(let players):
-                    self.models = players.map({ (player) -> SearchModel in
-                        return SearchModel(type: .player, id: player.id, name: player.name)
-                    })
-                    self.view?.presentModel()
-                case .failure(let error):
-                    print(error)
+            case .success(let players):
+                self.models = players.map { player in
+                    SearchModel(type: .player, id: player.id, name: player.name)
+                }
+                self.view?.presentModel()
+            case .failure(let error):
+                print(error)
             }
         })
     }
     
     private func performSearchTeams(for name: String) {
-        self.network?.search(item: Team.self, withName: name, completion: { (result) in
+        self.network.search(item: Team.self, withName: name, completion: { (result) in
             switch result {
-                case .success(let teams):
-                    self.models = teams.map({ (team) -> SearchModel in
-                        return SearchModel(type: .team, id: team.id, name: team.name)
-                    })
-                    self.view?.presentModel()
-                case .failure(let error):
-                    print(error)
+            case .success(let teams):
+                self.models = teams.map({ (team) -> SearchModel in
+                    return SearchModel(type: .team, id: team.id, name: team.name)
+                })
+                self.view?.presentModel()
+            case .failure(let error):
+                print(error)
             }
         })
     }

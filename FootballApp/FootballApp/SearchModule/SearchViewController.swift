@@ -26,7 +26,7 @@ class SearchViewController: UIViewController {
     
     private lazy var searchController = UISearchController(searchResultsController: nil)
     
-    private lazy var searchTypeSegmentControll: UISegmentedControl = {
+    private lazy var searchTypeSegmentControl: UISegmentedControl = {
         let searchTypeSegmentControll = UISegmentedControl(frame: .zero)
         searchTypeSegmentControll.insertSegment(withTitle: "Игроки", at: 0, animated: false)
         searchTypeSegmentControll.insertSegment(withTitle: "Команды", at: 1, animated: false)
@@ -44,8 +44,7 @@ class SearchViewController: UIViewController {
         
         navigationItem.largeTitleDisplayMode = .automatic
         navigationController?.navigationBar.prefersLargeTitles = true
-        view.addSubview(collectionView)
-        view.addSubview(searchTypeSegmentControll)
+        view.addSubviews(collectionView, searchTypeSegmentControl)
         
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.751727879, green: 0.7929214835, blue: 0.845862329, alpha: 1)]
         
@@ -56,9 +55,9 @@ class SearchViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        let collectionViewHeight = view.frame.height - searchTypeSegmentControll.frame.maxY
+        let collectionViewHeight = view.frame.height - searchTypeSegmentControl.frame.maxY
         collectionView.frame = CGRect(x: 0,
-                                      y: searchTypeSegmentControll.frame.maxY,
+                                      y: searchTypeSegmentControl.frame.maxY,
                                       width: view.frame.width,
                                       height: collectionViewHeight)
         
@@ -76,10 +75,10 @@ class SearchViewController: UIViewController {
     }
     
     private func setupSegmentControll() {
-        searchTypeSegmentControll.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9).isActive = true
-        searchTypeSegmentControll.heightAnchor.constraint(equalToConstant: 31).isActive = true
-        searchTypeSegmentControll.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        searchTypeSegmentControll.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 3).isActive = true
+        NSLayoutConstraint.activate([searchTypeSegmentControl.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9),
+                                     searchTypeSegmentControl.heightAnchor.constraint(equalToConstant: 31),
+                                     searchTypeSegmentControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                                     searchTypeSegmentControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 3)])
     }
 }
 
@@ -92,8 +91,15 @@ extension SearchViewController: SearchViewProtocol {
         }
     }
     
-    var selectedSegment: Int {
-        return searchTypeSegmentControll.selectedSegmentIndex
+    var selectedSegment: SearchModelType {
+        switch searchTypeSegmentControl.selectedSegmentIndex {
+        case 0:
+            return .player
+        case 1:
+            return .team
+        default:
+            return .unkown
+        }
     }
 }
 

@@ -10,6 +10,7 @@ import UIKit
 enum SearchModelType {
     case player
     case team
+    case unkown
 }
 
 struct SearchModel {
