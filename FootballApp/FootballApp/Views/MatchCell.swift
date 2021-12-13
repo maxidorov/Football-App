@@ -7,6 +7,7 @@
 
 import UIKit
 
+
 final class MatchCell: UICollectionViewCell {
     enum Constants {
         static let cellHeight: CGFloat = 150
@@ -27,9 +28,7 @@ final class MatchCell: UICollectionViewCell {
     lazy var firstTeamLabel: UILabel = makeTeamLabel()
     
     lazy var secondTeamLabel: UILabel = makeTeamLabel()
-    
-    lazy var imageLoader: ImageLoader = ImageLoader()
-    
+        
     var configurationModel: Match? = nil
     
     private lazy var timeLabel: UILabel = {
@@ -127,8 +126,8 @@ final class MatchCell: UICollectionViewCell {
         firstTeamImageView.image = UIImage()
         secondTeamImageView.image = UIImage()
         
-        imageLoader.cancelLoad(by: configurationModel?.homeTeam.logo)
-        imageLoader.cancelLoad(by: configurationModel?.awayTeam.logo)
+        ImageLoader.shared.cancelLoad(by: configurationModel?.homeTeam.logo)
+        ImageLoader.shared.cancelLoad(by: configurationModel?.awayTeam.logo)
         firstTeamLabel.text = nil
         secondTeamLabel.text = nil
         dateLabel.text = nil
@@ -138,7 +137,7 @@ final class MatchCell: UICollectionViewCell {
     // MARK: - Private methods
     
     private func loadImage(_ with: String?, completion: @escaping(UIImage?) -> Void) {
-        imageLoader.loadImage(with: with, completion: { result in
+        ImageLoader.shared.loadImage(with: with, completion: { result in
             switch result  {
             case .success(let image):
                 DispatchQueue.main.async {

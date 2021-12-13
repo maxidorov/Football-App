@@ -106,6 +106,12 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         cell.configure(matches[indexPath.row])
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let vc = MatchViewAssembly.createModule()
+        vc.match = matches[indexPath.row]
+        present(vc, animated: true, completion: nil)
+    }
 }
 
 // MARK: - MainView Protocol
