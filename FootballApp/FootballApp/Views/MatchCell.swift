@@ -54,7 +54,7 @@ final class MatchCell: UICollectionViewCell {
         let scoreLabel = UILabel()
         scoreLabel.font = UIFont.systemFont(ofSize: 50, weight: .regular)
         scoreLabel.textAlignment = .center
-        scoreLabel.textColor = .black
+        scoreLabel.adjustsFontSizeToFitWidth = true
         return scoreLabel
     }()
     

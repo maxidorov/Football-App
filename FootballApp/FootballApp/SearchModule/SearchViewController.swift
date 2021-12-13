@@ -8,7 +8,7 @@
 import UIKit
 
 class SearchViewController: UIViewController {
-    private enum Constants {
+    enum Constants {
         static let tabBarTitle: String = "Search"
     }
     
@@ -31,7 +31,6 @@ class SearchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = Constants.tabBarTitle
         navigationItem.largeTitleDisplayMode = .automatic
         navigationController?.navigationBar.prefersLargeTitles = true
         view.addSubview(collectionView)

@@ -8,7 +8,7 @@
 import UIKit
 
 class MainViewController: UIViewController {
-    private enum Constants {
+    enum Constants {
         // CV = collectionView
         static let CVMatchesSectionsNumber: Int = 1
         static let matchCellId: String = MatchCell.Constants.identifier
@@ -50,8 +50,6 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = Constants.tabBarTitle
-        
         [
             headerView, matchesCollectionView, bottomBar,
         ].forEach { view.addSubview($0) }
