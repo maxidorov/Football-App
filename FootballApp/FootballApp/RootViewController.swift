@@ -10,11 +10,13 @@ import UIKit
 class RootViewController: UITabBarController {
     private var mainViewController: UIViewController = {
         let vc = MainViewAssembly.createModule()
+        vc.title = MainViewController.Constants.tabBarTitle
         return vc
     } ()
   
     private var searchViewController: UIViewController = {
         let vc = SearchAssembly.createSearchModule()
+        vc.title = SearchViewController.Constants.tabBarTitle
         return vc
     }()
     
