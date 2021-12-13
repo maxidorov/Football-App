@@ -22,6 +22,8 @@ final class RegistrationViewController: UIViewController {
         static let separatorHeight: CGFloat = 1
     }
     
+    var registrationViewPresenter: RegistrationViewPresenterProtocol?
+    
     private lazy var logo = UIImage(named: "logo")
     private lazy var logoView = UIImageView(image: logo)
     private lazy var signInButton : UIButton = {
@@ -53,17 +55,20 @@ final class RegistrationViewController: UIViewController {
         return label
     }()
     
-    func makeTextField(placeholder: String) -> UITextField {
-        let emailText = UITextField()
-        emailText.font = UIFont.systemFont(ofSize: 17)
-        emailText.placeholder = placeholder
-
-        return emailText
+    private func makeTextField(placeholder: String, keyBoardType: UIKeyboardType, secureEntry: Bool = false) -> UITextField {
+        let textField = UITextField()
+        textField.font = UIFont.systemFont(ofSize: 17)
+        textField.placeholder = placeholder
+        textField.autocapitalizationType = .none
+        textField.autocorrectionType = .no
+        textField.isSecureTextEntry = secureEntry
+        textField.keyboardType = keyBoardType
+        return textField
     }
     
-    private lazy var emailTextField = makeTextField(placeholder: "Email")
+    private lazy var emailTextField = makeTextField(placeholder: "Email", keyBoardType: .emailAddress)
     
-    private lazy var passwordTextField = makeTextField(placeholder: "Password")
+    private lazy var passwordTextField = makeTextField(placeholder: "Password", keyBoardType: .default, secureEntry: true)
     
     private lazy var separators = (0...1).map { _ -> UIView in
         let separator = UIView()
@@ -161,8 +166,7 @@ final class RegistrationViewController: UIViewController {
     
     @objc private func loginButtonPressed() {
         signInButton.backgroundColor = AppColors.darkGreyColor
-        
-        // MARK:- Logging in logic
+        registrationViewPresenter?.loggingIn()
     }
     
     @objc private func loginButtonHover() {
@@ -175,7 +179,7 @@ final class RegistrationViewController: UIViewController {
         
         if gesture.didTapAttributedTextInLabel(label: signInLabel, inRange: range) {
             print("Tapped create account")
-            // MARK:- Go to registration ViewController
+            registrationViewPresenter?.singingUp()
         } else {
             print("Tapped other")
         }
@@ -212,3 +216,56 @@ private extension UITapGestureRecognizer {
             return NSLocationInRange(indexOfCharacter, targetRange)
         }
 }
+
+protocol RegistrationView: AnyObject {
+    var email: String? { get }
+    var password: String? { get }
+    
+    func onLoggingInSuccess()
+    func onLoggingInFailure(_ error: Error)
+    
+    func onSigningUpSuccess()
+    func onSigningUpFailure(_ error: Error)
+}
+
+
+
+
+extension RegistrationViewController: RegistrationView {
+    var email: String? {
+        get {
+            emailTextField.text
+        }
+    }
+    
+    var password: String? {
+        get {
+            passwordTextField.text
+        }
+    }
+    
+    func onLoggingInSuccess() {
+        presentSuccessAlert()
+    }
+    
+    func onLoggingInFailure(_ error: Error) {
+        presentFailureAlert(error: error)
+    }
+    
+    func onSigningUpSuccess() {
+        presentSuccessAlert()
+    }
+    
+    func onSigningUpFailure(_ error: Error) {
+        presentFailureAlert(error: error)
+    }
+    
+    private func presentSuccessAlert() {
+        presentAlert(title: "Success!", message: "Yep : )")
+    }
+    
+    private func presentFailureAlert(error: Error) {
+        presentAlert(title: ": (", message: error.localizedDescription)
+    }
+}
+
