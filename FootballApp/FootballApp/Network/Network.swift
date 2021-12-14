@@ -12,7 +12,7 @@ class Network: NetworkProtocol {
     public enum Constants {
         static let headers = [
             "x-rapidapi-host": "sportscore1.p.rapidapi.com",
-            "x-rapidapi-key": "2dce5ff179msh83c2fea57a06036p1e98f9jsndabc76fc9b2b"
+            "x-rapidapi-key": "c9b4cb4ee8msh962972f210927cep135288jsn196736e1ed38"
         ]
         
         static let domainUrl: String = "https://sportscore1.p.rapidapi.com"
