@@ -20,6 +20,7 @@ jobs:
       uses: xavierLowmiller/xcodegen-action@1.1.2
     - name: Install Dependences
       run: |
+        xcodegen generate
         pod install
       shell: bash
     - name: CocoaPods Action
