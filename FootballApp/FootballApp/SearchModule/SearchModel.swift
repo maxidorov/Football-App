@@ -7,14 +7,14 @@
 
 import UIKit
 
-enum SearchModelType {
+enum ModelType {
     case player
     case team
     case unkown
 }
 
 struct SearchModel {
-    let type: SearchModelType
+    let type: ModelType
     
     let id: Int
     let name: String

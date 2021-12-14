@@ -14,6 +14,8 @@ class SearchViewController: UIViewController {
     
     var presenter: SearchPresenterProtocol?
     
+    // MARK: - private properties
+    
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -35,6 +37,8 @@ class SearchViewController: UIViewController {
         return searchTypeSegmentControll
     }()
     
+    private var animateSegment: Bool = false
+    
     // MARK: - Override methods
     
     override func viewDidLoad() {
@@ -49,15 +53,16 @@ class SearchViewController: UIViewController {
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.751727879, green: 0.7929214835, blue: 0.845862329, alpha: 1)]
         
         setupSearchController()
-        setupSegmentControll()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        setupSegmentControl(animated: animateSegment)
+        animateSegment = true
         
         let collectionViewHeight = view.frame.height - searchTypeSegmentControl.frame.maxY
         collectionView.frame = CGRect(x: 0,
-                                      y: searchTypeSegmentControl.frame.maxY,
+                                      y: view.safeAreaLayoutGuide.layoutFrame.minY,
                                       width: view.frame.width,
                                       height: collectionViewHeight)
         
@@ -74,11 +79,13 @@ class SearchViewController: UIViewController {
         definesPresentationContext = true
     }
     
-    private func setupSegmentControll() {
-        NSLayoutConstraint.activate([searchTypeSegmentControl.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9),
-                                     searchTypeSegmentControl.heightAnchor.constraint(equalToConstant: 31),
-                                     searchTypeSegmentControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                                     searchTypeSegmentControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 3)])
+    private func setupSegmentControl(animated: Bool) {
+        UIView.animate(withDuration: animated ? 0.3 : 0) {
+            self.searchTypeSegmentControl.frame = CGRect(x: self.view.frame.width * 0.05,
+                                                         y: self.view.safeAreaLayoutGuide.layoutFrame.minY + 6,
+                                                         width: self.view.frame.width * 0.9,
+                                                         height: 31)
+        }
     }
 }
 
@@ -91,7 +98,7 @@ extension SearchViewController: SearchViewProtocol {
         }
     }
     
-    var selectedSegment: SearchModelType {
+    var selectedSegment: ModelType {
         switch searchTypeSegmentControl.selectedSegmentIndex {
         case 0:
             return .player
