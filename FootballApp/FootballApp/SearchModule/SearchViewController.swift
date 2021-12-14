@@ -34,7 +34,14 @@ class SearchViewController: UIViewController {
         searchTypeSegmentControll.insertSegment(withTitle: "Команды", at: 1, animated: false)
         searchTypeSegmentControll.selectedSegmentIndex = 0
         searchTypeSegmentControll.translatesAutoresizingMaskIntoConstraints = false
+        searchTypeSegmentControll.addTarget(self, action: #selector(updateSearchBySegment), for: .valueChanged)
         return searchTypeSegmentControll
+    }()
+    
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        activityIndicator.isHidden = true
+        return activityIndicator
     }()
     
     private var animateSegment: Bool = false
@@ -48,7 +55,7 @@ class SearchViewController: UIViewController {
         
         navigationItem.largeTitleDisplayMode = .automatic
         navigationController?.navigationBar.prefersLargeTitles = true
-        view.addSubviews(collectionView, searchTypeSegmentControl)
+        view.addSubviews(collectionView, searchTypeSegmentControl, activityIndicator)
         
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.751727879, green: 0.7929214835, blue: 0.845862329, alpha: 1)]
         
@@ -66,6 +73,7 @@ class SearchViewController: UIViewController {
                                       width: view.frame.width,
                                       height: collectionViewHeight)
         
+        activityIndicator.center = CGPoint(x: view.center.x, y: view.safeAreaLayoutGuide.layoutFrame.minY + 50)
     }
 
     // MARK: - Private methods
@@ -87,6 +95,11 @@ class SearchViewController: UIViewController {
                                                          height: 31)
         }
     }
+    
+    @objc private func updateSearchBySegment() {
+        guard let text = searchController.searchBar.text else { return }
+        presenter?.didTypeSearch(string: text)
+    }
 }
 
 // MARK: - SearchViewProtocol
@@ -95,6 +108,18 @@ extension SearchViewController: SearchViewProtocol {
     func presentModel() {
         DispatchQueue.main.async {
             self.collectionView.reloadData()
+        }
+    }
+    
+    func makeIndicator(active: Bool) {
+        DispatchQueue.main.async {
+            self.collectionView.isHidden = active
+            self.activityIndicator.isHidden = !active
+            if active {
+                self.activityIndicator.startAnimating()
+            } else {
+                self.activityIndicator.stopAnimating()
+            }
         }
     }
     

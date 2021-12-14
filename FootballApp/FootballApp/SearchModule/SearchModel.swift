@@ -18,4 +18,5 @@ struct SearchModel {
     
     let id: Int
     let name: String
+    var imageURL: String?
 }

@@ -190,8 +190,9 @@ class Network: NetworkProtocol {
     
     
     private func makeRequest<T: Decodable>(_ urlString: String, method: RequestType, type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+        guard let url = URL(string: urlString) else { return }
         let request = NSMutableURLRequest(
-            url: URL(string: urlString)!,
+            url: url,
             cachePolicy: .useProtocolCachePolicy,
             timeoutInterval: 10.0
         )
