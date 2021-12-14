@@ -31,6 +31,7 @@ class SearchPresenter: SearchPresenterProtocol {
         
         guard let selectedSegment = view?.selectedSegment else { return }
         let searchWorkItem = DispatchWorkItem { [weak self] in
+            self?.view?.makeIndicator(active: true)
             switch selectedSegment {
             case .player:
                 self?.performSearchPlayers(for: string)
@@ -41,7 +42,7 @@ class SearchPresenter: SearchPresenterProtocol {
             }
         }
         
-        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(330), execute: searchWorkItem)
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(450), execute: searchWorkItem)
         
         self.searchWorkItem = searchWorkItem
     }
@@ -53,8 +54,9 @@ class SearchPresenter: SearchPresenterProtocol {
             switch result {
             case .success(let players):
                 self.models = players.map { player in
-                    SearchModel(type: .player, id: player.id, name: player.name)
+                    SearchModel(type: .player, id: player.id, name: player.name, imageURL: player.photo)
                 }
+                self.view?.makeIndicator(active: false)
                 self.view?.presentModel()
             case .failure(let error):
                 print(error)
@@ -67,8 +69,9 @@ class SearchPresenter: SearchPresenterProtocol {
             switch result {
             case .success(let teams):
                 self.models = teams.map({ (team) -> SearchModel in
-                    return SearchModel(type: .team, id: team.id, name: team.name)
+                    return SearchModel(type: .team, id: team.id, name: team.name, imageURL: team.logo)
                 })
+                self.view?.makeIndicator(active: false)
                 self.view?.presentModel()
             case .failure(let error):
                 print(error)

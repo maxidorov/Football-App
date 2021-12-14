@@ -15,7 +15,7 @@ final class SearchItemCell: UICollectionViewCell {
             static let backgroundColor: UIColor = #colorLiteral(red: 0.9724641442, green: 0.9726034999, blue: 0.9724336267, alpha: 1)
             
             // Layout
-            static let imageViewCornerRadius: CGFloat = 15
+            static let imageViewCornerRadius: CGFloat = 5
             static let contentViewCornerRadius: CGFloat = 10
             static let titleMargins: CGFloat = 12
         }
@@ -34,12 +34,18 @@ final class SearchItemCell: UICollectionViewCell {
     lazy var imageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
         imageView.contentMode = .scaleAspectFit
-        imageView.backgroundColor = UIColor.systemGray2
+        imageView.backgroundColor = .clear
+        imageView.clipsToBounds = true
         imageView.layer.cornerRadius = Constants.Appearance.imageViewCornerRadius
         return imageView
     }()
     
-
+    // MARK: - private properties
+    
+    private var model: SearchModel?
+    
+    // MARK: - init
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.backgroundColor = Constants.Appearance.backgroundColor
@@ -78,9 +84,27 @@ final class SearchItemCell: UICollectionViewCell {
         )
     }
     
+    override func prepareForReuse() {
+        titleLabel.text = nil
+        imageView.image = nil
+        ImageLoader.shared.cancelLoad(by: model?.imageURL)
+    }
+    
     // MARK: - Public methods
     
     func configureWithModel(model: SearchModel) {
+        self.model = model
         titleLabel.text = model.name
+        
+        ImageLoader.shared.loadImage(with: model.imageURL) { (result) in
+            switch result {
+                case .success(let image):
+                    DispatchQueue.main.async {
+                        self.imageView.image = image
+                    }
+                case .failure(let error):
+                    print(error.localizedDescription)
+            }
+        }
     }
 }
