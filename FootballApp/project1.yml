@@ -1,0 +1,36 @@
+name: FootballApp
+
+    # MARK: - Options
+
+options:
+  xcodeVersion: 12.4
+  groupSortPosition: top
+  generateEmptyDirectories: true
+  deploymentTarget:
+    iOS: "14.4"
+    
+    # MARK: - Configurations
+
+configs:
+  Debug: debug
+  Release: release
+
+    # MARK: - Targets
+
+targets:
+  FootballApp:
+    platform: iOS
+    type: application
+    sources:
+      - FootballApp
+    postCompileScripts:
+      - script: swiftlint
+        name: Swiftlint
+    scheme:
+      testTargets:
+        - FootballApp
+  FootballAppTests:
+    platform: iOS
+    type: bundle.unit-test
+    sources:
+      - FootballAppTests
