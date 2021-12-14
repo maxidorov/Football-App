@@ -16,13 +16,9 @@ jobs:
     - name: Install Dependences
       run: |
         cd FootballApp
-        xcodegen genarate
         pod install
       shell: bash
     - name: CocoaPods Action
       uses: ty0x2333/cocoapods-action@0.2.0
-      with:
-        additional_build_params: -destination 'platform=iOS Simulator,name=iPhone 12,OS=14.4'
-        lint: false
     - name: xcodegen
       uses: xavierLowmiller/xcodegen-action@1.1.2
