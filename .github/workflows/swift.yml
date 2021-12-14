@@ -13,6 +13,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Install Dependences
+      run: |
+        cd FootballApp
+        xcodegen genarate
+        pod install
+      shell: bash
     - name: CocoaPods Action
       uses: ty0x2333/cocoapods-action@0.2.0
       with:
@@ -20,10 +26,3 @@ jobs:
         lint: false
     - name: xcodegen
       uses: xavierLowmiller/xcodegen-action@1.1.2
-    - name: Install Dependences
-      run: |
-        cd FootballApp
-        xcodegen genarate
-        pod install
-      shell: bash
-      
