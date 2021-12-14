@@ -35,4 +35,15 @@ extension Team: RequestIdentifier {
     }
 }
 
+extension Team {
+    init(id: Int) {
+        self.init(
+            id: id,
+            name: "",
+            shortName: nil,
+            hasLogo: false,
+            logo: nil
+        )
+    }
+}
 

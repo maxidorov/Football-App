@@ -37,4 +37,17 @@ extension Player: RequestIdentifier {
     }
 }
 
-
+extension Player {
+    init(id: Int) {        
+        self.init(
+            id: id,
+            name: "",
+            shortName: nil,
+            hasPhoto: false,
+            photo: nil,
+            age: nil,
+            position: nil,
+            positionName: nil
+        )
+    }
+}
