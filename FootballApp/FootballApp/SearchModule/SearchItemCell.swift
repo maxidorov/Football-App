@@ -27,7 +27,7 @@ final class SearchItemCell: UICollectionViewCell {
     
     lazy var titleLabel: UILabel = {
         let titleLabel = UILabel()
-        titleLabel.font = UIFont(name: "Helvetica-Light", size: 22)
+        titleLabel.font = UIFont(name: "Helvetica-Light", size: 20)
         return titleLabel
     }()
     

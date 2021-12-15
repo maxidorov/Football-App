@@ -53,13 +53,17 @@ class SearchPresenter: SearchPresenterProtocol {
         self.network.search(item: Player.self, withName: name, completion: { (result) in
             switch result {
             case .success(let players):
-                self.models = players.map { player in
+                let playersSet = Set(players)
+                self.models = playersSet.map { player in
                     SearchModel(type: .player, id: player.id, name: player.name, imageURL: player.photo)
-                }
+                }.sorted(by: { (mod1, mod2) -> Bool in
+                    mod1.id < mod2.id
+                })
                 self.view?.makeIndicator(active: false)
                 self.view?.presentModel()
             case .failure(let error):
-                print(error)
+                self.view?.makeIndicator(active: false)
+                print(error.localizedDescription)
             }
         })
     }
@@ -74,6 +78,7 @@ class SearchPresenter: SearchPresenterProtocol {
                 self.view?.makeIndicator(active: false)
                 self.view?.presentModel()
             case .failure(let error):
+                self.view?.makeIndicator(active: false)
                 print(error)
             }
         })

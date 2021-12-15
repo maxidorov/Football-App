@@ -37,6 +37,12 @@ extension Player: RequestIdentifier {
     }
 }
 
+extension Player: Equatable {
+    static func == (lhs: Player, rhs: Player) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 extension Player {
     init(id: Int) {        
         self.init(
