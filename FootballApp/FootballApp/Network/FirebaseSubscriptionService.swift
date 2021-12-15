@@ -33,6 +33,20 @@ class FirebaseSubscriptionService {
         self.unsubscribe(user: user, type: .player, subscriptionId: playerId)
     }
     
+    static func getApiKei(completion: @escaping (String) -> Void) {
+        let docRef = dataBase.collection("appData").document("apiKey")
+
+        docRef.getDocument() { (document, error) in
+          if let document = document {
+            if let data = document.data(), let key = data["key"] as? String {
+                completion(key)
+            }
+          } else {
+            debugPrint("Document does not exist.")
+          }
+        }
+    }
+    
     static func getSubscriptions(user: String, completion: @escaping ([Any]) -> Void) {
         var subscriptions : [Any] = []
         
