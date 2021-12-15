@@ -8,6 +8,7 @@
 import Foundation
 
 protocol MainViewPresenterProtocol: AnyObject {
+    var nextMatchPosition: Int { get }
     func viewDidLoad()
     
 }
@@ -22,6 +23,8 @@ class MainViewPresenter: MainViewPresenterProtocol {
     }
     private lazy var subscribedEntities = [Any]()
     private lazy var network: Network = Network()
+    
+    var nextMatchPosition: Int = 0
     
     // MARK: - Protocol methods
     
@@ -46,22 +49,27 @@ class MainViewPresenter: MainViewPresenterProtocol {
     }
     
     private func filterMatches(_ ms: [Match]) -> [Match] {
-        var array = ms.sorted(by: { $0.startAt ?? "" > $1.startAt ?? "" })
+        let matches = ms.sorted(by: { $0.startAt ?? "" > $1.startAt ?? "" })
         let calendar = Calendar.current
         globalDateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        var minimalDeltaTime:Int = Int.max
+        var prevMax = 0
 
-        array = array.filter { match in
-            guard
-                let dateString = match.startAt,
+        for i in 0..<matches.count {
+            let match = matches[i]
+            guard let dateString = match.startAt,
                 let date = globalDateFormatter.date(from: dateString) else {
-                return false
+                continue
             }
-         
-            // date - now <= 7
             let components = calendar.dateComponents([.day], from: Date(), to: date)
-            return  components.day.map { $0 <= 7 } ?? false
+            let deltaTime = components.day ?? Int.max
+            if (deltaTime < minimalDeltaTime && deltaTime >= 0) {
+                minimalDeltaTime = deltaTime
+                prevMax = i
+            }
         }
-        return array
+        nextMatchPosition = prevMax
+        return matches
     }
     
     private func matchesChanged() {

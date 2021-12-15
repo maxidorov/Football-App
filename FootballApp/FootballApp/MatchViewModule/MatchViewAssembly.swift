@@ -8,12 +8,12 @@
 import UIKit
 
 class MatchViewAssembly {
-    static func createModule() -> MatchViewController {
+    static func createModule(with model: Match) -> MatchViewController {
         let viewController = MatchViewController()
         let presenter = MatchViewPresenter()
-
         viewController.presenter = presenter
         presenter.view = viewController
+        presenter.match = model
 
         return viewController
     }

@@ -108,8 +108,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let vc = MatchViewAssembly.createModule()
-        vc.match = matches[indexPath.row]
+        let vc = MatchViewAssembly.createModule(with: matches[indexPath.row])
         present(vc, animated: true, completion: nil)
     }
 }
@@ -126,6 +125,7 @@ extension MainViewController: MainView {
         self.matches = matches
         DispatchQueue.main.async {
             self.matchesCollectionView.reloadData()
+            self.matchesCollectionView.scrollToItem(at: IndexPath(row: self.mainViewPresenter?.nextMatchPosition ?? 0, section: 0), at: [.top, .centeredHorizontally], animated: false)
         }
     }
     

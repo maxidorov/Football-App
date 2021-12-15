@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 let globalDateFormatter = DateFormatter()
 
 extension String {
@@ -42,5 +43,11 @@ extension String {
         globalDateFormatter.dateFormat = "HH:mm"
         globalDateFormatter.timeZone = .current
         return globalDateFormatter.string(from: date)
+    }
+    
+    func formatStatName() -> String {
+        var name = self
+        name = name.replacingOccurrences(of: "_", with: " ")
+        return String(name.prefix(1)).capitalized + String(name.dropFirst())
     }
 }
