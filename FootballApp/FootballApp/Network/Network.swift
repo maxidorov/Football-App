@@ -108,6 +108,26 @@ class Network: NetworkProtocol {
             }
         })
     }
+    
+    func getStatics(by eventId: Int, completion: @escaping(Result<[StatisticUnit], Error>) -> Void) {
+        let urlString = Constants.domainUrl + "/" +
+        EndpointComponent.events.rawValue +
+        "/\(eventId)/statistics"
+        debugPrint("url:: \(urlString)")
+    
+        makeRequest(urlString, method: .get, type: [StatisticUnit].self, completion: {
+            result in
+            onMainThreadAsync {
+                switch result {
+                case .success(let models):
+                    completion(.success(models))
+                case .failure(let err):
+                    debugPrint(err)
+                    completion(.failure(err))
+                }
+            }
+        })
+    }
 
     func searchMatches<T>(by: [T], completion: @escaping (Result<[Match], Error>) -> Void) {
         var players = Set<Player>()

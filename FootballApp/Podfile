@@ -17,7 +17,7 @@ target 'FootballApp' do
 
   pod 'Firebase/Auth'
   pod 'Firebase/Firestore'
-
+  pod 'UIImageColors'
 end
 
 post_install do |installer|
