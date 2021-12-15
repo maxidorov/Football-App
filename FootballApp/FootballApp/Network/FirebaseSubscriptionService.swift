@@ -17,20 +17,20 @@ class FirebaseSubscriptionService {
         case player
     }
     
-    static func subscribe(user: String, teamId: Int) {
-        self.subscribe(user: user, type: .team, subscriptionId: teamId)
+    static func subscribe(user: String, teamId: Int, completion: @escaping (Bool) -> Void) {
+        self.subscribe(user: user, type: .team, subscriptionId: teamId, completion: completion)
     }
     
-    static func subscribe(user: String, playerId: Int) {
-        self.subscribe(user: user, type: .player, subscriptionId: playerId)
+    static func subscribe(user: String, playerId: Int, completion: @escaping (Bool) -> Void) {
+        self.subscribe(user: user, type: .player, subscriptionId: playerId, completion: completion)
     }
     
-    static func unsubscribe(user: String, teamId: Int) {
-        self.unsubscribe(user: user, type: .team, subscriptionId: teamId)
+    static func unsubscribe(user: String, teamId: Int, completion: @escaping (Bool) -> Void) {
+        self.unsubscribe(user: user, type: .team, subscriptionId: teamId, completion: completion)
     }
     
-    static func unsubscribe(user: String, playerId: Int) {
-        self.unsubscribe(user: user, type: .player, subscriptionId: playerId)
+    static func unsubscribe(user: String, playerId: Int, completion: @escaping (Bool) -> Void) {
+        self.unsubscribe(user: user, type: .player, subscriptionId: playerId, completion: completion)
     }
     
     static func getSubscriptions(user: String, completion: @escaping ([Any]) -> Void) {
@@ -69,7 +69,7 @@ class FirebaseSubscriptionService {
     
     private static func subscribe(user: String,
                                   type: Subscription,
-                                  subscriptionId: Int) {
+                                  subscriptionId: Int, completion: @escaping (Bool) -> Void) {
         let docData: [String: Any] = [
             "id" : subscriptionId
         ]
@@ -83,19 +83,28 @@ class FirebaseSubscriptionService {
             error in
             if let error = error {
                 debugPrint("Error writing document: \(error)")
+                completion(false)
             } else {
                 debugPrint("Document successfully written!")
+                completion(true)
             }
         }
     }
     
     private static func unsubscribe(user: String,
                                     type: Subscription,
-                                    subscriptionId: Int) {
+                                    subscriptionId: Int,
+                                    completion: @escaping (Bool) -> Void) {
         dataBase.collection("userSubscriptions")
                 .document(user)
                 .collection((type == .team ? "subscribedTeams" : "subscribedPlayers"))
                 .document(String(subscriptionId))
-                .delete()
+            .delete { (error) in
+                if error == nil {
+                    completion(true)
+                } else {
+                    completion(false)
+                }
+            }
     }
 }
