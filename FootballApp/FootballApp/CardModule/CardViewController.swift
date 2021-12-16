@@ -60,7 +60,7 @@ extension CardViewController: UICollectionViewDataSource, UICollectionViewDelega
 
 extension CardViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        CardModel.getCellSize(for: indexPath.row)
+        CardCellSizes.getCellSize(for: indexPath.row)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {

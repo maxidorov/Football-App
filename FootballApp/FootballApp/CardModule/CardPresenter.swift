@@ -10,13 +10,13 @@ import Firebase
 
 final class CardPresenter: CardPresenterProtocol {
     
-    var model: CardModel
+    var model: SearchModel
     
     weak var view: CardViewProtocol?
     
     weak var cellUpdater: CellUpdaterProtocol?
     
-    init(model: CardModel) {
+    init(model: SearchModel) {
         self.model = model
         self.model.subscriptonStatus = SubscriptionManager.currentSubscriptions.contains(where: { (model) -> Bool in
             model.id == self.model.id

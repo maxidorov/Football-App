@@ -48,7 +48,7 @@ final class CardLabelCell: UICollectionViewCell {
 
 extension CardLabelCell: CardCellProtocol {
     
-    func configure(with model: CardModel) {
+    func configure(with model: SearchModel) {
         nameLabel.text = model.name
     }
 }

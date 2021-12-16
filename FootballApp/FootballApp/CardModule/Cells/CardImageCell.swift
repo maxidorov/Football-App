@@ -51,7 +51,7 @@ final class CardImageCell: UICollectionViewCell {
 // MARK: - PlayerCardCellProtocol
 
 extension CardImageCell: CardCellProtocol {
-    func configure(with model: CardModel) {
+    func configure(with model: SearchModel) {
         DispatchQueue.global().async {
             ImageLoader.shared.loadImage(with: model.imageURL) { (result) in
                 switch result {

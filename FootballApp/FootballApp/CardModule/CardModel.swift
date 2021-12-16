@@ -17,14 +17,6 @@ enum CardCellSizes: Int {
     case imageHeight = 120
     case labelHeignt = 50
     case subscribeHeight = 80
-}
-
-struct CardModel {
-    var id: Int
-    var name: String
-    var imageURL: String?
-    var type: ModelType
-    var subscriptonStatus: Bool?
     
     static func getCellSize(for row: Int) -> CGSize {
         let width = Int(UIScreen.main.bounds.width)

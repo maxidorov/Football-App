@@ -159,8 +159,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard searchTypeSegmentControl.selectedSegmentIndex == 0,
-              let oldModel = presenter?.models[indexPath.row] else { return }
-        let newModel = CardModel(id: oldModel.id, name: oldModel.name, imageURL: oldModel.imageURL, type: oldModel.type)
+              let newModel = presenter?.models[indexPath.row] else { return }
         
         let cardviewcontroller = CardAssembly.createCardModule(with: newModel)
         
