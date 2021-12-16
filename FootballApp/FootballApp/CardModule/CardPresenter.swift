@@ -38,11 +38,13 @@ final class CardPresenter: CardPresenterProtocol {
             FirebaseSubscriptionService.subscribe(user: userID, playerId: model.id) { (isSubscribe) in
                 self.cellUpdater?.updateCell(with: isSubscribe)
                 self.model.subscriptonStatus = isSubscribe
+                SubscriptionManager.updateSubscriptions()
             }
         } else {
             FirebaseSubscriptionService.unsubscribe(user: userID, playerId: model.id) { (isUnsubscribe) in
                 self.cellUpdater?.updateCell(with: !isUnsubscribe)
                 self.model.subscriptonStatus = !isUnsubscribe
+                SubscriptionManager.updateSubscriptions()
             }
         }
     }
