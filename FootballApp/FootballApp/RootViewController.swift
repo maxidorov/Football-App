@@ -28,6 +28,7 @@ class RootViewController: UITabBarController {
         for i in 0...1 {
             items[i].image = UIImage(systemName: ["house", "magnifyingglass"][i])
         }
+        items.last?.title = "Search"
         self.tabBar.tintColor = .systemBlue
     }
 }

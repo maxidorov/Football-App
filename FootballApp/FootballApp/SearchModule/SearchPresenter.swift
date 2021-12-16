@@ -24,8 +24,18 @@ class SearchPresenter: SearchPresenterProtocol {
         searchWorkItem?.cancel()
         
         if string == "" {
-            models = []
+            let filterModels = SubscriptionManager.currentSubscriptions.filter {
+                $0.type == models.first?.type
+            }
+            
+            if models == filterModels {
+                return
+            }
+            
+            models = SubscriptionManager.currentSubscriptions
             view?.presentModel()
+            guard let index = view?.selectedSegment.rawValue else { return }
+            showCurrentSubscription(with: index)
             return
         }
         
@@ -45,6 +55,11 @@ class SearchPresenter: SearchPresenterProtocol {
         DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(450), execute: searchWorkItem)
         
         self.searchWorkItem = searchWorkItem
+    }
+    
+    func showCurrentSubscription(with segment: Int) {
+        models = SubscriptionManager.currentSubscriptions.filter { $0.type.rawValue == segment }
+        view?.presentModel()
     }
     
     // MARK: - private methods

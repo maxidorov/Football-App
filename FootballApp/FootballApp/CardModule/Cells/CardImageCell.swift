@@ -22,7 +22,7 @@ final class CardImageCell: UICollectionViewCell {
                                                   y: 0,
                                                   width: CardCellSizes.imageHeight.rawValue - 10,
                                                   height: CardCellSizes.imageHeight.rawValue - 10))
-        photoView.backgroundColor = .gray
+        photoView.backgroundColor = .clear
         photoView.clipsToBounds = true
         photoView.layer.cornerRadius = 10
         return photoView

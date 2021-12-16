@@ -48,3 +48,9 @@ extension SearchModel {
         
     }
 }
+
+extension SearchModel: Equatable {
+    static func == (lhs: SearchModel, rhs: SearchModel) -> Bool {
+        lhs.id == rhs.id
+    }
+}

@@ -23,6 +23,7 @@ class SearchViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.backgroundColor = .white
         collectionView.register(SearchItemCell.self, forCellWithReuseIdentifier: SearchItemCell.identifier)
+        collectionView.keyboardDismissMode = .interactive
         return collectionView
     }()
     
@@ -58,8 +59,12 @@ class SearchViewController: UIViewController {
         view.addSubviews(collectionView, searchTypeSegmentControl, activityIndicator)
         
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.751727879, green: 0.7929214835, blue: 0.845862329, alpha: 1)]
-        
         setupSearchController()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        presenter?.showCurrentSubscription(with: searchTypeSegmentControl.selectedSegmentIndex + 1)
     }
     
     override func viewDidLayoutSubviews() {
@@ -93,12 +98,21 @@ class SearchViewController: UIViewController {
                                                          y: self.view.safeAreaLayoutGuide.layoutFrame.minY + 6,
                                                          width: self.view.frame.width * 0.9,
                                                          height: 31)
+            let collectionViewHeight = self.view.frame.height - self.searchTypeSegmentControl.frame.maxY
+            self.collectionView.frame = CGRect(x: 0,
+                                          y: self.view.safeAreaLayoutGuide.layoutFrame.minY,
+                                          width: self.view.frame.width,
+                                          height: collectionViewHeight)
         }
     }
     
     @objc private func updateSearchBySegment() {
-        guard let text = searchController.searchBar.text else { return }
-        presenter?.didTypeSearch(string: text)
+        if let text = searchController.searchBar.text, text != "" {
+            presenter?.didTypeSearch(string: text)
+        } else {
+            presenter?.showCurrentSubscription(with: searchTypeSegmentControl.selectedSegmentIndex + 1)
+        }
+        
     }
 }
 
@@ -158,8 +172,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard searchTypeSegmentControl.selectedSegmentIndex == 0,
-              var newModel = presenter?.models[indexPath.row] else { return }
+        guard var newModel = presenter?.models[indexPath.row] else { return }
         newModel.subscriptonStatus = SubscriptionManager.subscriptionCheckSet.contains(newModel.id)
         let cardviewcontroller = CardAssembly.createCardModule(with: newModel)
         
