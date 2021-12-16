@@ -231,7 +231,7 @@ class Network: NetworkProtocol {
             makeRequest()
         } else {
             getApiKeyFromKeychainOrDB { key in
-                request.allHTTPHeaderFields = Network.makeHeaders(apiKey: key)
+                request.allHTTPHeaderFields = Network.makeHeaders(apiKey: key ?? "")
                 makeRequest()
             }
         }
@@ -239,7 +239,7 @@ class Network: NetworkProtocol {
 }
 
 
-fileprivate func getApiKeyFromKeychainOrDB(completion: @escaping (String) -> Void) {
+fileprivate func getApiKeyFromKeychainOrDB(completion: @escaping (String?) -> Void) {
     if let apiK = KeychainService.getDataFromKeychainByKey(key: "api-key") {
         let keyData = String(decoding: apiK, as: UTF8.self)
         debugPrint("Got api-key from keyckain: \(keyData)")
@@ -248,14 +248,18 @@ fileprivate func getApiKeyFromKeychainOrDB(completion: @escaping (String) -> Voi
         completion(keyData)
     } else {
         FirebaseSubscriptionService.getApiKei(completion: { key in
-            debugPrint("Got api-key from firebase: \(key)")
-            debugPrint("Saving key to keychain for future")
-            
-            let keyData = Data(key.utf8)
-            let _ = KeychainService.saveToKeychainService(key: "api-key", data: keyData)
-            Network.apiKey = key
-            
-            completion(key)
+            if let key = key {
+                debugPrint("Got api-key from firebase: \(key)")
+                debugPrint("Saving key to keychain for future")
+                
+                let keyData = Data(key.utf8)
+                KeychainService.saveToKeychainService(key: "api-key", data: keyData)
+                Network.apiKey = key
+                
+                completion(key)
+            } else {
+                completion(nil)
+            }
         })
     }
 }

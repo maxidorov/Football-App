@@ -33,7 +33,7 @@ class FirebaseSubscriptionService {
         self.unsubscribe(user: user, type: .player, subscriptionId: playerId)
     }
     
-    static func getApiKei(completion: @escaping (String) -> Void) {
+    static func getApiKei(completion: @escaping (String?) -> Void) {
         let docRef = dataBase.collection("appData").document("apiKey")
 
         docRef.getDocument() { (document, error) in
@@ -43,6 +43,7 @@ class FirebaseSubscriptionService {
             }
           } else {
             debugPrint("Document does not exist.")
+            completion(nil)
           }
         }
     }

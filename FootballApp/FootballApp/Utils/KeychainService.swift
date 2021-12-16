@@ -17,7 +17,7 @@ class KeychainService : NSObject {
                 kSecValueData as String: data] as [String : Any]
     }
     
-    static func saveToKeychainService(key: String, data: Data) -> OSStatus {
+    @discardableResult static func saveToKeychainService(key: String, data: Data) -> OSStatus {
         let query = generateQuery(key: key, data: data)
         
         return SecItemAdd(query as CFDictionary, nil)
