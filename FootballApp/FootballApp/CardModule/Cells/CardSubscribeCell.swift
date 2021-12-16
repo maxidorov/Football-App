@@ -44,7 +44,7 @@ final class CardSubscribeCell: UICollectionViewCell {
 }
 
 extension CardSubscribeCell: CardCellProtocol {
-    func configure(with model: CardModel) {
+    func configure(with model: SearchModel) {
         guard let status = model.subscriptonStatus else { return }
         updateCell(with: status)
     }

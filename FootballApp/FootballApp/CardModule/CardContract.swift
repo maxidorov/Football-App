@@ -8,7 +8,7 @@
 import UIKit
 
 protocol CardCellProtocol {
-    func configure(with model: CardModel)
+    func configure(with model: SearchModel)
 }
 
 protocol CardViewProtocol: AnyObject {}

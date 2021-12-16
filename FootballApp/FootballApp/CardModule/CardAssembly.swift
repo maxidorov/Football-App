@@ -8,7 +8,7 @@
 import UIKit
 
 final class CardAssembly {
-    static func createCardModule(with model: CardModel) -> UIViewController {
+    static func createCardModule(with model: SearchModel) -> UIViewController {
         let viewController = CardViewController()
         let presenter = CardPresenter(model: model)
         
