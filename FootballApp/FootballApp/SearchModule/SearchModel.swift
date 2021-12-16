@@ -7,9 +7,9 @@
 
 import UIKit
 
-enum ModelType {
-    case player
-    case team
+enum ModelType: Int {
+    case player = 1
+    case team = 2
     case unkown
 }
 

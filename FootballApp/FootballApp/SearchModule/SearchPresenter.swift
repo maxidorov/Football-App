@@ -72,8 +72,11 @@ class SearchPresenter: SearchPresenterProtocol {
         self.network.search(item: Team.self, withName: name, completion: { (result) in
             switch result {
             case .success(let teams):
+                let teams = Set(teams)
                 self.models = teams.map({ (team) -> SearchModel in
                     return SearchModel(type: .team, id: team.id, name: team.name, imageURL: team.logo)
+                }).sorted(by: { (mod1, mod2) -> Bool in
+                    mod1.id < mod2.id
                 })
                 self.view?.makeIndicator(active: false)
                 self.view?.presentModel()

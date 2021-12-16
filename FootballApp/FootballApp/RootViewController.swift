@@ -16,6 +16,7 @@ class RootViewController: UITabBarController {
   
     private var searchViewController: UIViewController = {
         let vc = SearchAssembly.createSearchModule()
+        vc.title = SearchViewController.Constants.tabBarTitle
         return vc
     }()
     

@@ -29,6 +29,12 @@ extension Team: Hashable {
     }
 }
 
+extension Team: Equatable {
+    static func == (lhs: Team, rhs: Team) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 extension Team: RequestIdentifier {
     static var requestComponent: String {
         Network.EndpointComponent.teams.value
