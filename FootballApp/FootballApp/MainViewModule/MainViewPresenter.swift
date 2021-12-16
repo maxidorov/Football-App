@@ -36,7 +36,12 @@ class MainViewPresenter: MainViewPresenterProtocol {
     
     private func retrieveMatches() {
         //HARDCODE
-        subscribedEntities.append(Player(id: 289, name: "Leo Messi", shortName: nil, hasPhoto: false, photo: nil, age: nil, position: nil, positionName: nil))
+        subscribedEntities.append(
+            Player(id: 289, name: "Leo Messi", shortName: nil, hasPhoto: false, photo: nil, age: nil, position: nil, positionName: nil)
+        )
+        subscribedEntities.append(
+            Team(id: 11, name: "B", shortName: nil, hasLogo: false, logo: nil)
+        )
         
         network.searchMatches(by: subscribedEntities, completion: { result in
             switch result {
