@@ -10,7 +10,7 @@ import UIKit
 enum ModelType: Int {
     case player = 1
     case team = 2
-    case unkown
+    case unknown
 }
 
 struct SearchModel {
@@ -20,4 +20,31 @@ struct SearchModel {
     let name: String
     var imageURL: String?
     var subscriptonStatus: Bool?
+}
+
+extension SearchModel {
+    init?(dict: [String : Any]) {
+        guard
+            let type = dict["type"],
+            let name = dict["name"],
+            let id = dict["id"],
+            let typeInt = type as? Int,
+            let nameStr = name as? String,
+            let idInt = id as? Int else {
+            return nil
+        }
+        
+        
+        let imgUrl = dict["imageUrl"] as? String
+        let subsStatus = dict["subscriptionStatus"] as? Bool
+        
+        self.init(
+            type: ModelType.init(rawValue: typeInt) ?? .unknown,
+            id: idInt,
+            name: nameStr,
+            imageURL: imgUrl,
+            subscriptonStatus: subsStatus
+        )
+        
+    }
 }

@@ -17,12 +17,12 @@ class FirebaseSubscriptionService {
         case player
     }
     
-    static func subscribe(user: String, teamId: Int, completion: @escaping (Bool) -> Void) {
-        self.subscribe(user: user, type: .team, subscriptionId: teamId, completion: completion)
+    static func subscribe(user: String, teamModel: SearchModel, completion: @escaping (Bool) -> Void) {
+        self.subscribe(user: user, type: .team, subscriptionModel: teamModel, completion: completion)
     }
     
-    static func subscribe(user: String, playerId: Int, completion: @escaping (Bool) -> Void) {
-        self.subscribe(user: user, type: .player, subscriptionId: playerId, completion: completion)
+    static func subscribe(user: String, playerModel: SearchModel, completion: @escaping (Bool) -> Void) {
+        self.subscribe(user: user, type: .player, subscriptionModel: playerModel, completion: completion)
     }
     
     static func unsubscribe(user: String, teamId: Int, completion: @escaping (Bool) -> Void) {
@@ -49,17 +49,19 @@ class FirebaseSubscriptionService {
             }
         }
     
-        for (index, ref) in [teamsRef, playersRef].enumerated() {
+        for ref in [teamsRef, playersRef] {
             ref.getDocuments() { (querySnapshot, err) in
                 if let err = err {
                     print("Error getting documents: \(err)")
                 } else {
                     querySnapshot?.documents.forEach { document in
-                        guard let id = document.data()["id"], let idAsInt = id as? Int else {
+                        let model = SearchModel(dict: document.data())
+                        
+                        guard let modelUnwrapped = model else {
                             return completion([])
                         }
                         
-                        subscriptions.append(index == 0 ? Team(id: idAsInt) : Player(id: idAsInt))
+                        subscriptions.append(modelUnwrapped)
                     }
                 }
                 remaining -= 1
@@ -69,15 +71,19 @@ class FirebaseSubscriptionService {
     
     private static func subscribe(user: String,
                                   type: Subscription,
-                                  subscriptionId: Int, completion: @escaping (Bool) -> Void) {
+                                  subscriptionModel: SearchModel, completion: @escaping (Bool) -> Void) {
         let docData: [String: Any] = [
-            "id" : subscriptionId
+            "id" : subscriptionModel.id,
+            "name" : subscriptionModel.name,
+            "imageUrl" : subscriptionModel.imageURL ?? "",
+            "type" : (subscriptionModel.type == .team ? 2 : 1),
+            "subscriptionStatus" : true
         ]
         
         let docRef = dataBase.collection("userSubscriptions")
                              .document(user)
                              .collection((type == .team ? "subscribedTeams" : "subscribedPlayers"))
-                             .document(String(subscriptionId))
+                             .document(String(subscriptionModel.id))
         
         docRef.setData(docData) {
             error in
