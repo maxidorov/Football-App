@@ -9,6 +9,7 @@ import Foundation
 
 protocol SearchPresenterProtocol: AnyObject {
     func didTypeSearch(string: String)
+    func showCurrentSubscription(with segment: Int)
     var models: [SearchModel] { get }
 }
 
