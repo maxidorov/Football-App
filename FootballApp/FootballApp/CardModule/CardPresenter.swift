@@ -33,9 +33,8 @@ final class CardPresenter: CardPresenterProtocol {
     
     @objc private func subscribeButtonPressed(sender: UIButton) {
         guard let userID = Auth.auth().currentUser?.uid else { return }
-        
         if model.subscriptonStatus != true {
-            FirebaseSubscriptionService.subscribe(user: userID, playerId: model.id) { (isSubscribe) in
+            FirebaseSubscriptionService.subscribe(user: userID, playerModel: model) { (isSubscribe) in
                 self.cellUpdater?.updateCell(with: isSubscribe)
                 self.model.subscriptonStatus = isSubscribe
                 SubscriptionManager.updateSubscriptions()

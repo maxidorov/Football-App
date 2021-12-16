@@ -130,7 +130,7 @@ extension SearchViewController: SearchViewProtocol {
         case 1:
             return .team
         default:
-            return .unkown
+            return .unknown
         }
     }
 }
@@ -159,8 +159,8 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard searchTypeSegmentControl.selectedSegmentIndex == 0,
-              let newModel = presenter?.models[indexPath.row] else { return }
-        
+              var newModel = presenter?.models[indexPath.row] else { return }
+        newModel.subscriptonStatus = SubscriptionManager.subscriptionCheckSet.contains(newModel.id)
         let cardviewcontroller = CardAssembly.createCardModule(with: newModel)
         
         present(cardviewcontroller, animated: true)

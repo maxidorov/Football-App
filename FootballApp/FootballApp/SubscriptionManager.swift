@@ -9,21 +9,23 @@ import Foundation
 import Firebase
 
 final class SubscriptionManager {
+    
     static var currentSubscriptions: [SearchModel] = []
     
     static func updateSubscriptions() {
         guard let userID = Auth.auth().currentUser?.uid else { return }
         FirebaseSubscriptionService.getSubscriptions(user: userID) { (response) in
             currentSubscriptions = response.compactMap { item in
-                if let player = item as? Player {
-                    return SearchModel(type: .player, id: player.id, name: player.name, imageURL: player.photo)
+                if let model = item as? SearchModel {
+                    return SearchModel(type: .player, id: model.id, name: model.name, imageURL: model.imageURL)
                 }
                 
-                if let team = item as? Team {
-                    return SearchModel(type: .team, id: team.id, name: team.name, imageURL: team.logo)
-                }
                 return nil
             }
         }
+    }
+    
+    static var subscriptionCheckSet: Set<Int> {
+        Set(currentSubscriptions.map { $0.id })
     }
 }
