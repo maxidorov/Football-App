@@ -17,7 +17,7 @@ final class SubscriptionManager {
         FirebaseSubscriptionService.getSubscriptions(user: userID) { (response) in
             currentSubscriptions = response.compactMap { item in
                 if let model = item as? SearchModel {
-                    return SearchModel(type: .player, id: model.id, name: model.name, imageURL: model.imageURL)
+                    return SearchModel(type: model.type, id: model.id, name: model.name, imageURL: model.imageURL)
                 }
                 
                 return nil
