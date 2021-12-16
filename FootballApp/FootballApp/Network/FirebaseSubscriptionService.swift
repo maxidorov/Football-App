@@ -37,10 +37,9 @@ class FirebaseSubscriptionService {
         let docRef = dataBase.collection("appData").document("apiKey")
 
         docRef.getDocument() { (document, error) in
-          if let document = document {
-            if let data = document.data(), let key = data["key"] as? String {
+          if let document = document,
+             let data = document.data(), let key = data["key"] as? String {
                 completion(key)
-            }
           } else {
             debugPrint("Document does not exist.")
             completion(nil)
