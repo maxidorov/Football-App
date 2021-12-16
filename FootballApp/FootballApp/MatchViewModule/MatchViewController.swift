@@ -18,6 +18,7 @@ class MatchViewController: UIViewController {
     lazy var collectionView: UICollectionView =  {
         collectionViewLayout.minimumLineSpacing = 0
         let view = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
+        view.backgroundColor = .systemBackground
         return view
     } ()
     
@@ -36,8 +37,8 @@ class MatchViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.register(
-            MatchStatisticsViewCell.self,
-            forCellWithReuseIdentifier: MatchStatisticsViewCell.Constants.identifier
+            LastMatchesCell.self,
+            forCellWithReuseIdentifier: LastMatchesCell.Constants.identifier
         )
         
         collectionView.register(
@@ -86,10 +87,10 @@ extension MatchViewController: UICollectionViewDelegate, UICollectionViewDataSou
         switch indexPath.row {
         case 0:
             guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: MatchStatisticsViewCell.Constants.identifier,
+                withReuseIdentifier: LastMatchesCell.Constants.identifier,
                 for: indexPath
-            ) as? MatchStatisticsViewCell else { return UICollectionViewCell() }
-            cell.parentCollectionView = collectionView
+            ) as? LastMatchesCell else { return UICollectionViewCell() }
+            
             if (cell.match == nil) {
                 cell.match = presenter?.match
             }
@@ -116,7 +117,7 @@ extension MatchViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         if indexPath.row == 0 {
-            return CGSize(width: view.frame.width, height: MatchStatisticsViewCell.Constants.cellHeight)
+            return CGSize(width: view.frame.width, height: LastMatchesCell.Constants.cellHeight)
         }
         
         if indexPath.row >= 1 {

@@ -116,7 +116,7 @@ class Network: NetworkProtocol {
         let urlString = Constants.domainUrl + "/" +
         EndpointComponent.events.rawValue +
         "/\(eventId)/statistics"
-        debugPrint("url:: \(urlString)")
+        
     
         makeRequest(urlString, method: .get, type: [StatisticUnit].self, completion: {
             result in
@@ -130,6 +130,41 @@ class Network: NetworkProtocol {
                 }
             }
         })
+    }
+    
+    
+    func getMatches(by1: Team, by2: Team, completion: @escaping(Result<[Match], Error>) -> Void) {
+        let urlString = Constants.domainUrl +
+        EndpointComponent.teams.value + "/\(by1.id)" +
+        "/h2h-events/" + "\(by2.id)"
+        makeRequest(urlString, method: .get, type: [Match].self, completion: {
+            result in
+            switch (result) {
+                case .success(let matches):
+                    completion(.success(matches))
+                case .failure(let err):
+                    completion(.failure(err))
+            }
+        })
+        
+    }
+    
+    func getMatchFacts(by eventId: Int, completion: @escaping(Result<[MatchFact], Error>) -> Void) {
+        let urlString = Constants.domainUrl + "/" +
+        EndpointComponent.events.rawValue +
+        "/\(eventId)/series"
+        
+        makeRequest(urlString, method: .get, type: [MatchFact].self, completion: {
+            result in
+            switch result {
+            case .success(let models):
+                completion(.success(models))
+            case .failure(let err):
+                debugPrint(err)
+                completion(.failure(err))
+            }
+        })
+        
     }
 
     func searchMatches<T>(by: [T], completion: @escaping (Result<[Match], Error>) -> Void) {
@@ -179,35 +214,6 @@ class Network: NetworkProtocol {
                 }
                 remaining -= 1
             })
-        }
-    }
-    
-    func testNetwork() {
-        search(item: Player.self, withName: "Kevin De Bru") { result in
-            switch result {
-                case .success(let players):
-                    debugPrint(players)
-                    self.searchTeams(byPlayer: players[0]) { result in
-                        switch result {
-                            case .success(let teams): do {
-                                debugPrint(teams)
-                                self.searchMatches(by: [teams[1], players[0]]) {
-                                    rr in
-                                    switch rr {
-                                        case .success(let yep):
-                                            debugPrint("MMM: \(yep)")
-                                        case .failure(let err):
-                                            debugPrint(err)
-                                    }
-                                }
-                            }
-                            case .failure(let err):
-                                debugPrint(err)
-                        }
-                    }
-                case .failure(let err):
-                    debugPrint(err)
-            }
         }
     }
     

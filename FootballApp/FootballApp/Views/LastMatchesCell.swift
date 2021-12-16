@@ -8,12 +8,12 @@
 import UIKit
 import UIImageColors
 
-class MatchStatisticsViewCell: UICollectionViewCell {
+class LastMatchesCell: UICollectionViewCell {
     enum Constants {
-        static let identifier = "MatchStatisticsViewCellId"
+        static let identifier = "LastMatchesCell"
         static let cellMargin: CGFloat = 10
         static let cellSpace: CGFloat = 12
-        static let cellHeight: CGFloat = 120
+        static let cellHeight: CGFloat = 170
     }
     
     override var reuseIdentifier: String? {
@@ -23,29 +23,28 @@ class MatchStatisticsViewCell: UICollectionViewCell {
     var homeTeamColor: UIImageColors?
     var awayTeamColor: UIImageColors?
     
-    var parentCollectionView: UICollectionView?
-    
     var match: Match? {
         didSet {
             guard let match = match else { return }
-            network.getStatics(by: match.id, completion: { [weak self]
-                result in
-                onMainThreadAsync {
+            network.getMatches(
+                by1: match.homeTeam,
+                by2: match.awayTeam, completion: { [weak self]
+                    result in
                     switch result {
-                    case .success(let stats):
-                        debugPrint(stats)
-                        self?.statistics = stats
-                        self?.collectionView.reloadData()
-                    case .failure(_):
+                    case.success(let matches):
+                        self?.matches = self?.filterMatches(matches) ?? []
+                        onMainThreadAsync {
+                            self?.collectionView.reloadData()
+                        }
+                    case .failure:
                         break
                     }
-                }
-            })
+                })
         }
     }
     
     lazy var network = Network()
-    var statistics = [StatisticUnit]()
+    var matches = [Match]()
     
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -56,7 +55,7 @@ class MatchStatisticsViewCell: UICollectionViewCell {
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = Constants.cellSpace * 2
         layout.itemSize = CGSize(
-            width: (frame.width - 2 * Constants.cellMargin) / 2,
+            width: (frame.width - 2 * Constants.cellMargin) / 3,
             height: frame.height - 2 * Constants.cellMargin
         )
         
@@ -81,7 +80,7 @@ class MatchStatisticsViewCell: UICollectionViewCell {
         collectionView.delegate = self
         collectionView.dataSource = self
         
-        collectionView.register(StatisticUnitCell.self, forCellWithReuseIdentifier: StatisticUnitCell.Constants.identifier)
+        collectionView.register(MiniMatchCell.self, forCellWithReuseIdentifier: MiniMatchCell.Constants.identifier)
     }
     
     required init?(coder: NSCoder) {
@@ -102,26 +101,36 @@ class MatchStatisticsViewCell: UICollectionViewCell {
             )
         )
     }
+    
+    private func filterMatches(_ arrayOfMatches: [Match]) -> [Match] {
+        var arrMatches: [Match] = []
+        arrMatches = arrayOfMatches.sorted(by: { (a, b) in
+            return a.startAt ?? "" > b.startAt ?? ""})
+        
+        arrMatches = arrMatches.filter{ a in a.id != (match?.id ?? 0) }
+        
+        return arrMatches
+    }
 }
 
 
-extension MatchStatisticsViewCell: UICollectionViewDelegate, UICollectionViewDataSource {
+extension LastMatchesCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         1
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        statistics.count
-//        1
+        matches.count
+
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: StatisticUnitCell.Constants.identifier, for: indexPath) as? StatisticUnitCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MiniMatchCell.Constants.identifier, for: indexPath) as? MiniMatchCell else {
             return UICollectionViewCell()
         }
         cell.homeTeamColor = homeTeamColor
         cell.awayTeamColor = awayTeamColor
-        cell.statModel = statistics[indexPath.row]
+        cell.match = matches[indexPath.row]
 
         return cell
     }

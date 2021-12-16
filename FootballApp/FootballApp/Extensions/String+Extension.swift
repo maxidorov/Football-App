@@ -34,6 +34,17 @@ extension String {
         return globalDateFormatter.string(from: date)
     }
     
+    var toDateNoYear: String {
+        globalDateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        globalDateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        guard let date = globalDateFormatter.date(from: self) else {
+            return MatchCell.Constants.dateLabelPlaceholder
+        }
+        globalDateFormatter.dateFormat = "dd/MM"
+        globalDateFormatter.timeZone = .current
+        return globalDateFormatter.string(from: date)
+    }
+    
     var toTime: String {
         globalDateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         globalDateFormatter.timeZone = TimeZone(abbreviation: "UTC")
