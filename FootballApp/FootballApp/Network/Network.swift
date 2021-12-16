@@ -9,12 +9,15 @@ import Foundation
 import UIKit
 
 class Network: NetworkProtocol {
+    
+    static var apiKey : String?
+    
+    static func makeHeaders(apiKey: String) -> [String : String] {[
+        "x-rapidapi-host": "sportscore1.p.rapidapi.com",
+        "x-rapidapi-key": apiKey
+    ]}
+    
     public enum Constants {
-        static let headers = [
-            "x-rapidapi-host": "sportscore1.p.rapidapi.com",
-            "x-rapidapi-key": "c9b4cb4ee8msh962972f210927cep135288jsn196736e1ed38"
-        ]
-        
         static let domainUrl: String = "https://sportscore1.p.rapidapi.com"
         static let sportId: String = "1"
     }
@@ -220,29 +223,67 @@ class Network: NetworkProtocol {
             timeoutInterval: 10.0
         )
         request.httpMethod = method.value
-        request.allHTTPHeaderFields = Constants.headers
-        
-        URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {
-            (jsonData, response, error) -> Void in
-            
-            if let error = error {
-                return completion(.failure(error))
-            }
-            
-            if jsonData == nil {
-                return completion(.failure(NSError(
-                    domain:"", code: 123, userInfo: nil
-                )))
-            }
-            
-            do {
-                let object = try JSONDecoder().decode(SearchRequestResponse<T>.self, from: jsonData!)
-                return completion(.success(object.data))
-            } catch {
-                debugPrint("DATA ERROR: " + (String(data: jsonData!, encoding: .utf8)!))
-                return completion(.failure(error))
-            }
 
-        }).resume()
+        func makeRequest() {
+            URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {
+                (jsonData, response, error) -> Void in
+                
+                if let error = error {
+                    return completion(.failure(error))
+                }
+                
+                if jsonData == nil {
+                    return completion(.failure(NSError(
+                        domain:"", code: 123, userInfo: nil
+                    )))
+                }
+                
+                do {
+                    let object = try JSONDecoder().decode(SearchRequestResponse<T>.self, from: jsonData!)
+                    return completion(.success(object.data))
+                } catch {
+                    debugPrint("DATA ERROR: " + (String(data: jsonData!, encoding: .utf8)!))
+                    return completion(.failure(error))
+                }
+
+            }).resume()
+        }
+        
+        if let apiK = Network.apiKey {
+            request.allHTTPHeaderFields = Network.makeHeaders(apiKey: apiK)
+            makeRequest()
+        } else {
+            getApiKeyFromKeychainOrDB { key in
+                request.allHTTPHeaderFields = Network.makeHeaders(apiKey: key ?? "")
+                makeRequest()
+            }
+        }
     }
 }
+
+
+fileprivate func getApiKeyFromKeychainOrDB(completion: @escaping (String?) -> Void) {
+    if let apiK = KeychainService.getDataFromKeychainByKey(key: "api-key") {
+        let keyData = String(decoding: apiK, as: UTF8.self)
+        debugPrint("Got api-key from keyckain: \(keyData)")
+        Network.apiKey = keyData
+        
+        completion(keyData)
+    } else {
+        FirebaseSubscriptionService.getApiKei(completion: { key in
+            if let key = key {
+                debugPrint("Got api-key from firebase: \(key)")
+                debugPrint("Saving key to keychain for future")
+                
+                let keyData = Data(key.utf8)
+                KeychainService.saveToKeychainService(key: "api-key", data: keyData)
+                Network.apiKey = key
+                
+                completion(key)
+            } else {
+                completion(nil)
+            }
+        })
+    }
+}
+
