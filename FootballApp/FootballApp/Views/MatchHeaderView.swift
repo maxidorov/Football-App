@@ -104,7 +104,7 @@ class MatchHeaderView: UIView {
         secondTeamLabel.text = withModel.awayTeam.shortName ?? withModel.name
         
         withModel.startAt.map {
-            timeLabel.text = $0.toDate
+            timeLabel.text = $0.toTime
             dateLabel.text = $0.toDate
         }
         

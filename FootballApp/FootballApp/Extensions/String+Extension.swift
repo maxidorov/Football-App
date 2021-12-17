@@ -34,6 +34,15 @@ extension String {
         return globalDateFormatter.string(from: date)
     }
     
+    var toDateForm: Date {
+        globalDateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        globalDateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        guard let date = globalDateFormatter.date(from: self) else {
+            return Date()
+        }
+        return date
+    }
+    
     var toDateNoYear: String {
         globalDateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         globalDateFormatter.timeZone = TimeZone(abbreviation: "UTC")

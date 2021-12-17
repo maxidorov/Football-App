@@ -7,6 +7,7 @@
 
 import UIKit
 
+
 class MatchViewController: UIViewController {
     enum Constants {
         static let headerHeight: CGFloat = MatchHeaderView.Constants.height
@@ -17,6 +18,7 @@ class MatchViewController: UIViewController {
     private let collectionViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
     lazy var collectionView: UICollectionView =  {
         collectionViewLayout.minimumLineSpacing = 0
+        collectionViewLayout.scrollDirection = .vertical
         let view = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
         view.backgroundColor = .systemBackground
         return view
@@ -52,6 +54,12 @@ class MatchViewController: UIViewController {
             OneLineStatisticCell.self,
             forCellWithReuseIdentifier: OneLineStatisticCell.Constants.identifier
         )
+        
+        collectionView.register(
+            AddToCallendarCell.self,
+            forCellWithReuseIdentifier: AddToCallendarCell.Constants.identifier
+        )
+        
         showActivityIndicator()
     }
     
@@ -60,6 +68,7 @@ class MatchViewController: UIViewController {
         layoutHeaderView()
         layoutCollectionView()
         layoutAIndicator()
+        collectionViewLayout.invalidateLayout()
     }
     
     private func showActivityIndicator() {
@@ -102,51 +111,96 @@ extension MatchViewController: UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        1 + (presenter?.statistics.count ?? 0)
+        1 + max((presenter?.statistics.count ?? 0), (presenter?.match?.startAt?.toDateForm ?? Date() > Date()) ? 1 : 0)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch indexPath.row {
-        case 0:
+        let statCount = presenter?.statistics.count ?? 0
+        
+        let makeLastMatchesCell: () -> UICollectionViewCell = {
             guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: LastMatchesCell.Constants.identifier,
-                for: indexPath
-            ) as? LastMatchesCell else { return UICollectionViewCell() }
+            withReuseIdentifier: LastMatchesCell.Constants.identifier,
+            for: indexPath
+        ) as? LastMatchesCell else { return UICollectionViewCell() }
             
             if (cell.match == nil) {
-                cell.match = presenter?.match
+                cell.match = self.presenter?.match
             }
-            cell.homeTeamColor = presenter?.homeTeamColor
-            cell.awayTeamColor = presenter?.awayTeamColor
+            cell.homeTeamColor = self.presenter?.homeTeamColor
+            cell.awayTeamColor = self.presenter?.awayTeamColor
             return cell
-                
-        case 1..<(1 + (presenter?.statistics.count ?? 0)):
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: OneLineStatisticCell.Constants.identifier,
-                for: indexPath
-            ) as? OneLineStatisticCell else { return UICollectionViewCell() }
-            cell.awayTeamColor = presenter?.awayTeamColor
-            cell.homeTeamColor = presenter?.homeTeamColor
-            cell.statModel = presenter?.statistics[indexPath.row - 1]
-            return cell
-            
-        default:
-            return UICollectionViewCell()
         }
         
+        if (statCount != 0) {
+            switch indexPath.row {
+            case 0:
+                return makeLastMatchesCell()
+            case 1..<(1 + (statCount)):
+                guard let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: OneLineStatisticCell.Constants.identifier,
+                    for: indexPath
+                ) as? OneLineStatisticCell else { return UICollectionViewCell() }
+                cell.awayTeamColor = presenter?.awayTeamColor
+                cell.homeTeamColor = presenter?.homeTeamColor
+                cell.statModel = presenter?.statistics[indexPath.row - 1]
+                return cell
+            default:
+                return UICollectionViewCell()
+            }
+        } else if (presenter?.match?.startAt?.toDateForm ?? Date() > Date()){
+            switch indexPath.row {
+            case 0:
+                return makeLastMatchesCell()
+            case 1:
+                guard let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: AddToCallendarCell.Constants.identifier,
+                    for: indexPath
+                ) as? AddToCallendarCell else { return UICollectionViewCell() }
+                cell.match = presenter?.match
+                cell.presentAction = { self.present($0, animated: true) }
+                return cell
+            default:
+                return UICollectionViewCell()
+            }
+        } else {
+            switch indexPath.row {
+            case 0:
+                return makeLastMatchesCell()
+            default:
+                return UICollectionViewCell()
+            }
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        if indexPath.row == 0 {
-            return CGSize(width: view.frame.width, height: LastMatchesCell.Constants.cellHeight)
+        let statCount = presenter?.statistics.count ?? 0
+        if statCount != 0 {
+            switch indexPath.row {
+            case 0:
+                return CGSize(width:  collectionView.frame.width, height: LastMatchesCell.Constants.cellHeight)
+            case 1..<(1 + statCount):
+                return CGSize(width: collectionView.frame.width, height: OneLineStatisticCell.Constants.cellHeight)
+            default:
+                return CGSize(width: collectionView.frame.width, height: 0)
+            }
+        }  else if (presenter?.match?.startAt?.toDateForm ?? Date() > Date()) {
+            switch indexPath.row {
+            case 0:
+                return CGSize(width:  collectionView.frame.width, height: LastMatchesCell.Constants.cellHeight)
+            case 1:
+                return CGSize(width: collectionView.frame.width - LastMatchesCell.Constants.cellMargin * 2, height: AddToCallendarCell.Constants.cellHeight)
+            default:
+                return CGSize(width: collectionView.frame.width, height: 0)
+            }
+        } else {
+            switch indexPath.row {
+            case 0:
+                return CGSize(width:  collectionView.frame.width, height: LastMatchesCell.Constants.cellHeight)
+            default:
+                return CGSize(width: collectionView.frame.width, height: 0)
+            }
         }
         
-        if indexPath.row >= 1 {
-            return CGSize(width: view.frame.width, height: OneLineStatisticCell.Constants.cellHeight)
-        }
-        
-        return CGSize(width: view.frame.width, height: 0)
     }
     
 }
