@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import MapKit
 
-class PubMapView: UIView {
+class PubMapView : UIView {
     
     private enum Constants {
         // UI Constants
@@ -116,8 +116,7 @@ extension PubMapView : CLLocationManagerDelegate {
                 self.searchCompleted = true
             }
         }
-        // MARK:- Uncomment two following lines
-        // for map not no update while moving
+        // MARK:- Uncomment two following lines for map not no update while moving
         // locationManager?.stopUpdatingLocation()
         // locationManager = nil
     }
@@ -166,7 +165,7 @@ private extension MKMapView {
   }
 }
 
-class Pub: NSObject, MKAnnotation {
+class Pub : NSObject, MKAnnotation {
   private static let emptySubtitle = ""
     
   let title: String?
