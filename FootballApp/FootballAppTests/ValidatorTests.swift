@@ -8,7 +8,7 @@
 import XCTest
 @testable import FootballApp
 
-class FootballAppTests: XCTestCase {
+class ValidatorTests: XCTestCase {
     
     let emailTesting = ["hello", "cog@wheel", "'cogwheel the orange'@example.com", "123@$.xyz", "dog@hi.", "annalzrv@me.com", "hello@lo.l", "hello@l.ol"]
 

@@ -4,20 +4,20 @@ platform :ios, '13.0'
 # ignore all warnings from all pods
 inhibit_all_warnings!
 
-
-target 'FootballApp' do
-  
-  # Comment the next line if you don't want to use dynamic frameworks
-  use_frameworks!
-
-  # Pods for FootballApp
-
-  # For Analytics without IDFA collection capability, use this pod instead
-  # pod ‘Firebase/AnalyticsWithoutAdIdSupport’
-
+def shared_pods
   pod 'Firebase/Auth'
   pod 'Firebase/Firestore'
   pod 'UIImageColors'
+end
+
+target 'FootballApp' do
+  use_frameworks!
+  shared_pods
+end
+
+target 'FootballAppTests' do
+  use_frameworks!
+  shared_pods
 end
 
 post_install do |installer|
