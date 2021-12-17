@@ -25,6 +25,24 @@ class MatchHeaderView: UIView {
     
     lazy var secondTeamLabel: UILabel = makeTeamLabel()
     
+    private lazy var timeLabel: UILabel = {
+        let timeLabel = UILabel()
+        timeLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        timeLabel.textAlignment = .center
+        timeLabel.adjustsFontSizeToFitWidth = true
+        timeLabel.minimumScaleFactor = 0.5
+        return timeLabel
+    }()
+    
+    private lazy var dateLabel: UILabel = {
+        let dateLabel = UILabel()
+        dateLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        dateLabel.textAlignment = .center
+        dateLabel.adjustsFontSizeToFitWidth = true
+        dateLabel.minimumScaleFactor = 0.5
+        return dateLabel
+    }()
+    
     private lazy var scoreLabel: UILabel = {
         let scoreLabel = UILabel()
         scoreLabel.font = UIFont.systemFont(ofSize: 50, weight: .regular)
@@ -42,7 +60,9 @@ class MatchHeaderView: UIView {
             firstTeamLabel,
             secondTeamLabel,
             firstTeamImageView,
-            secondTeamImageView
+            secondTeamImageView,
+            timeLabel,
+            dateLabel
         )
         
         backgroundColor = .secondarySystemBackground
@@ -60,6 +80,8 @@ class MatchHeaderView: UIView {
         layoutTeamLabels()
         layoutImageLabels()
         layoutScoreLabel()
+        layoutTimeLabel()
+        layoutDateLabel()
     }
     
     // MARK: - Public methods
@@ -81,7 +103,10 @@ class MatchHeaderView: UIView {
         firstTeamLabel.text = withModel.homeTeam.shortName ?? withModel.name
         secondTeamLabel.text = withModel.awayTeam.shortName ?? withModel.name
         
-        
+        withModel.startAt.map {
+            timeLabel.text = $0.toDate
+            dateLabel.text = $0.toDate
+        }
         
         scoreLabel.text = MatchCell.Constants.scoreLabelPlaceholder
         if
@@ -150,6 +175,28 @@ class MatchHeaderView: UIView {
             
         )
         scoreLabel.center = CGPoint(x: center.x, y: firstTeamImageView.center.y)
+    }
+    
+    private func layoutTimeLabel() {
+        timeLabel.frame = CGRect(
+            origin: .zero,
+            size: CGSize(width: frame.width / 8, height: 12)
+        )
+        timeLabel.center = CGPoint(
+            x: center.x,
+            y: firstTeamImageView.frame.minY + 0.05 * bounds.height
+        )
+    }
+    
+    private func layoutDateLabel() {
+        dateLabel.frame = CGRect(
+            origin: .zero,
+            size: CGSize(width: frame.width / 8, height: 12)
+        )
+        dateLabel.center = CGPoint(
+            x: center.x,
+            y: firstTeamImageView.frame.maxY + 0.01 * bounds.height
+        )
     }
     
     private func layoutTeamLabels() {

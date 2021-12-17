@@ -16,9 +16,10 @@ struct Player: Decodable {
     let age: Int?
     let position: String?
     let positionName: String?
+    let flag: String?
     
     enum CodingKeys: String, CodingKey {
-        case id, name, photo, age, position
+        case id, name, photo, age, position, flag
         case shortName = "name_short"
         case hasPhoto = "has_photo"
         case positionName = "position_name"
@@ -53,7 +54,7 @@ extension Player {
             photo: nil,
             age: nil,
             position: nil,
-            positionName: nil
+            positionName: nil, flag: nil
         )
     }
 }

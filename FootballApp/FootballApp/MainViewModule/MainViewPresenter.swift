@@ -37,10 +37,10 @@ class MainViewPresenter: MainViewPresenterProtocol {
     private func retrieveMatches() {
         //HARDCODE
         subscribedEntities.append(
-            Player(id: 289, name: "Leo Messi", shortName: nil, hasPhoto: false, photo: nil, age: nil, position: nil, positionName: nil)
+            Player(id: 289, name: "Leo Messi", shortName: nil, hasPhoto: false, photo: nil, age: nil, position: nil, positionName: nil, flag: nil)
         )
         subscribedEntities.append(
-            Team(id: 11, name: "B", shortName: nil, hasLogo: false, logo: nil)
+            Team(id: 11, name: "B", shortName: nil, hasLogo: false, logo: nil, country: nil)
         )
         
         network.searchMatches(by: subscribedEntities, completion: { result in

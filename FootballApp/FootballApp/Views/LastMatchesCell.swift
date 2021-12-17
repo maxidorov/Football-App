@@ -13,7 +13,8 @@ class LastMatchesCell: UICollectionViewCell {
         static let identifier = "LastMatchesCell"
         static let cellMargin: CGFloat = 10
         static let cellSpace: CGFloat = 12
-        static let cellHeight: CGFloat = 170
+        static let verticalMargin: CGFloat = 6
+        static let cellHeight: CGFloat = 170 + verticalMargin
     }
     
     override var reuseIdentifier: String? {
@@ -35,6 +36,7 @@ class LastMatchesCell: UICollectionViewCell {
                         self?.matches = self?.filterMatches(matches) ?? []
                         onMainThreadAsync {
                             self?.collectionView.reloadData()
+                            self?.collectionView.fadeIn()
                         }
                     case .failure:
                         break
@@ -64,9 +66,9 @@ class LastMatchesCell: UICollectionViewCell {
         view.backgroundColor = .systemBackground
         view.contentInset = UIEdgeInsets(
             top: 0,
-            left: 2 * Constants.cellMargin,
+            left: 1.5 * Constants.cellMargin,
             bottom: 0,
-            right: 2 * Constants.cellMargin
+            right: 1.5 * Constants.cellMargin
         )
         return view
     } ()
@@ -76,7 +78,7 @@ class LastMatchesCell: UICollectionViewCell {
         debugPrint("trying to init")
         
         addSubviews(collectionView)
-        
+        collectionView.fadeOut(duration: 0)
         collectionView.delegate = self
         collectionView.dataSource = self
         
@@ -94,10 +96,13 @@ class LastMatchesCell: UICollectionViewCell {
     
     func collectionViewLayout() {
         collectionView.frame = CGRect(
-            origin: .zero,
+            origin: CGPoint(
+                x: 0,
+                y: Constants.verticalMargin
+            ),
             size: CGSize(
                 width: frame.width,
-                height: Constants.cellHeight
+                height: Constants.cellHeight - 2 * Constants.verticalMargin
             )
         )
     }
@@ -107,7 +112,11 @@ class LastMatchesCell: UICollectionViewCell {
         arrMatches = arrayOfMatches.sorted(by: { (a, b) in
             return a.startAt ?? "" > b.startAt ?? ""})
         
-        arrMatches = arrMatches.filter{ a in a.id != (match?.id ?? 0) }
+        guard let match = match else { return [] }
+        
+        arrMatches = arrMatches.filter{ a in
+            a.startAt ?? "" < match.startAt ?? ""
+        }
         
         return arrMatches
     }

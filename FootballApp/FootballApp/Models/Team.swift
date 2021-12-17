@@ -13,10 +13,10 @@ struct Team: Decodable {
     let shortName: String?
     let hasLogo: Bool
     let logo: String?
-    
+    let country: String?
     
     enum CodingKeys: String, CodingKey {
-        case id, name, logo
+        case id, name, logo, country
         case shortName = "name_short"
         case hasLogo = "has_logo"
         
@@ -48,7 +48,8 @@ extension Team {
             name: "",
             shortName: nil,
             hasLogo: false,
-            logo: nil
+            logo: nil,
+            country: nil
         )
     }
 }

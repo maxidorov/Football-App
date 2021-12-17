@@ -20,6 +20,7 @@ struct SearchModel {
     let name: String
     var imageURL: String?
     var subscriptonStatus: Bool?
+    var description: String?
 }
 
 extension SearchModel {
@@ -30,7 +31,9 @@ extension SearchModel {
             let id = dict["id"],
             let typeInt = type as? Int,
             let nameStr = name as? String,
-            let idInt = id as? Int else {
+            let idInt = id as? Int,
+            let desc = dict["description"] as? String
+        else {
             return nil
         }
         
@@ -43,10 +46,13 @@ extension SearchModel {
             id: idInt,
             name: nameStr,
             imageURL: imgUrl,
-            subscriptonStatus: subsStatus
+            subscriptonStatus: subsStatus,
+            description: desc
         )
         
     }
+    
+    
 }
 
 extension SearchModel: Equatable {

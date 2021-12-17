@@ -71,14 +71,14 @@ class OneLineStatisticCell: UICollectionViewCell {
         
         switch statModel.compareCode {
         case 1:
-            homeStatLabel.textColor = .black
+            homeStatLabel.textColor = .label
             awayStatLabel.textColor = .lightGray
         case 2:
             homeStatLabel.textColor = .lightGray
-            awayStatLabel.textColor = .black
+            awayStatLabel.textColor = .label
         default:
-            homeStatLabel.textColor = .black
-            awayStatLabel.textColor = .black
+            homeStatLabel.textColor = .label
+            awayStatLabel.textColor = .label
         }
         
     }
