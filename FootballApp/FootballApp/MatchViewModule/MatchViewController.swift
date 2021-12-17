@@ -21,6 +21,12 @@ class MatchViewController: UIViewController {
         collectionViewLayout.scrollDirection = .vertical
         let view = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
         view.backgroundColor = .systemBackground
+        view.contentInset = UIEdgeInsets(
+            top: 8,
+            left: 0,
+            bottom: 40,
+            right: 0
+        )
         return view
     } ()
     
@@ -58,6 +64,12 @@ class MatchViewController: UIViewController {
         collectionView.register(
             AddToCallendarCell.self,
             forCellWithReuseIdentifier: AddToCallendarCell.Constants.identifier
+        )
+        
+
+        collectionView.register(
+            PubsCell.self,
+            forCellWithReuseIdentifier: PubsCell.Constants.identifier
         )
         
         showActivityIndicator()
@@ -111,7 +123,8 @@ extension MatchViewController: UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        1 + max((presenter?.statistics.count ?? 0), (presenter?.match?.startAt?.toDateForm ?? Date() > Date()) ? 1 : 0)
+        1 + max((presenter?.statistics.count ?? 0), (presenter?.match?.startAt?.toDateForm ?? Date() > Date()) ? 2 : 0)
+
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -159,6 +172,14 @@ extension MatchViewController: UICollectionViewDelegate, UICollectionViewDataSou
                 cell.match = presenter?.match
                 cell.presentAction = { self.present($0, animated: true) }
                 return cell
+
+            case 2:
+                guard let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: PubsCell.Constants.identifier,
+                    for: indexPath
+                ) as? PubsCell else { return UICollectionViewCell() }
+                return cell
+
             default:
                 return UICollectionViewCell()
             }
@@ -189,6 +210,13 @@ extension MatchViewController: UICollectionViewDelegate, UICollectionViewDataSou
                 return CGSize(width:  collectionView.frame.width, height: LastMatchesCell.Constants.cellHeight)
             case 1:
                 return CGSize(width: collectionView.frame.width - LastMatchesCell.Constants.cellMargin * 2, height: AddToCallendarCell.Constants.cellHeight)
+
+            case 2:
+                
+                return CGSize(
+                    width: collectionView.frame.width - LastMatchesCell.Constants.cellMargin * 2,
+                    height: (collectionView.frame.width - LastMatchesCell.Constants.cellMargin * 2) / 1.5 + PubsCell.Constants.marginTop)
+
             default:
                 return CGSize(width: collectionView.frame.width, height: 0)
             }
@@ -200,8 +228,9 @@ extension MatchViewController: UICollectionViewDelegate, UICollectionViewDataSou
                 return CGSize(width: collectionView.frame.width, height: 0)
             }
         }
-        
     }
+    
+    
     
 }
 
