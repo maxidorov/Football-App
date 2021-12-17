@@ -26,6 +26,7 @@ class SearchViewController: UIViewController {
         collectionView.backgroundColor = .systemBackground
         collectionView.clipsToBounds = true
         collectionView.register(SearchItemCell.self, forCellWithReuseIdentifier: SearchItemCell.identifier)
+        collectionView.keyboardDismissMode = .interactive
         return collectionView
     }()
     
@@ -67,13 +68,22 @@ class SearchViewController: UIViewController {
         
         navigationItem.largeTitleDisplayMode = .automatic
         navigationController?.navigationBar.prefersLargeTitles = true
+
         view.addSubviews(collectionView, kostilView, searchTypeSegmentControl, activityIndicator)
+
         setupSearchController()
         makeIndicator(active: false)
         kostilView.backgroundColor = .systemBackground
 
     }
     
+
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        presenter?.showCurrentSubscription(with: searchTypeSegmentControl.selectedSegmentIndex + 1)
+    }
+
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -129,12 +139,17 @@ class SearchViewController: UIViewController {
                 width: self.view.frame.width,
                 height: 50
             )
+
         }
     }
     
     @objc private func updateSearchBySegment() {
-        guard let text = searchController.searchBar.text else { return }
-        presenter?.didTypeSearch(string: text)
+        if let text = searchController.searchBar.text, text != "" {
+            presenter?.didTypeSearch(string: text)
+        } else {
+            presenter?.showCurrentSubscription(with: searchTypeSegmentControl.selectedSegmentIndex + 1)
+        }
+        
     }
 }
 
@@ -193,8 +208,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard searchTypeSegmentControl.selectedSegmentIndex == 0,
-              var newModel = presenter?.models[indexPath.row] else { return }
+        guard var newModel = presenter?.models[indexPath.row] else { return }
         newModel.subscriptonStatus = SubscriptionManager.subscriptionCheckSet.contains(newModel.id)
         let cardviewcontroller = CardAssembly.createCardModule(with: newModel)
         
