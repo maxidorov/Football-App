@@ -13,8 +13,10 @@ class AddToCallendarCell: UICollectionViewCell, EKEventEditViewDelegate {
     
     enum Constants {
         static let identifier = "AddToCallendarCell"
+
         static let topMargin: CGFloat = 4
         static let cellHeight: CGFloat = 50 + topMargin
+
         static let cornerRounds: CGFloat = MiniMatchCell.Constants.cornerRadius
     }
     
@@ -35,10 +37,10 @@ class AddToCallendarCell: UICollectionViewCell, EKEventEditViewDelegate {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+
         backgroundColor = .clear
         button.layer.cornerRadius = Constants.cornerRounds
         button.clipsToBounds = true
-        
         addSubviews(button)
     }
     
@@ -48,6 +50,7 @@ class AddToCallendarCell: UICollectionViewCell, EKEventEditViewDelegate {
     
     override func layoutSubviews() {
         button.frame = CGRect(
+
             origin: CGPoint(
                 x: 0,
                 y: Constants.topMargin
@@ -56,6 +59,7 @@ class AddToCallendarCell: UICollectionViewCell, EKEventEditViewDelegate {
                 width: frame.width,
                 height: Constants.cellHeight - Constants.topMargin
             )
+
         )
     }
     

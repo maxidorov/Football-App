@@ -74,4 +74,12 @@ extension String {
     func captializeFirst() -> String {
         return String(self.prefix(1)).capitalized + String(self.dropFirst())
     }
+    
+    func addTabs(_ times: Int) -> String {
+        var str = self
+        for _ in 1...times {
+            str += "\t"
+        }
+        return str
+    }
 }

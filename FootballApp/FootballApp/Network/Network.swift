@@ -217,6 +217,18 @@ class Network: NetworkProtocol {
         }
     }
     
+    func getPlayerInfo(by playerId: Int, completion: @escaping (PlayerInfo) -> Void) {
+        let urlString = "https://sportscore1.p.rapidapi.com/players/\(playerId)"
+        
+        makeRequest(urlString, method: .get, type: PlayerInfo.self) { (result) in
+            switch result {
+            case .success(let pInfo):
+                completion(pInfo)
+            case .failure(let err):
+                print(err)
+            }
+        }
+    }
     
     private func makeRequest<T: Decodable>(_ urlString: String, method: RequestType, type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
         guard let url = URL(string: urlString) else {

@@ -72,7 +72,6 @@ class MainViewController: UIViewController {
         )
         showActivityIndicator()
         mainViewPresenter?.viewDidLoad()
-        
     }
     
     override func viewWillLayoutSubviews() {
@@ -165,7 +164,9 @@ extension MainViewController: MainView {
         self.matches = matches
         onMainThreadAsync {
             self.matchesCollectionView.reloadData()
-            self.matchesCollectionView.scrollToItem(at: IndexPath(row: self.mainViewPresenter?.nextMatchPosition ?? 0, section: 0), at: [.top, .centeredHorizontally], animated: false)
+            if matches.count != 0 {
+                self.matchesCollectionView.scrollToItem(at: IndexPath(row: self.mainViewPresenter?.nextMatchPosition ?? 0, section: 0), at: [.top, .centeredHorizontally], animated: false)
+            }
             self.hideActivityIndicator()
         }
     }

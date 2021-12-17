@@ -13,4 +13,5 @@ protocol NetworkProtocol {
     func searchMatches(byPlayer: Player, completion: @escaping (Result<[Match], Error>) -> Void)
     func searchTeams(byPlayer: Player, completion: @escaping (Result<[Team], Error>) -> Void)
     func searchMatches<T>(by: [T], completion: @escaping (Result<[Match], Error>) -> Void)
+    func getPlayerInfo(by playerId: Int, completion: @escaping (PlayerInfo) -> Void)
 }
