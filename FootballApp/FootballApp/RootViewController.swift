@@ -20,15 +20,21 @@ class RootViewController: UITabBarController {
         return vc
     }()
     
+    private var profileViewController: UIViewController = {
+        let vc = ProfileViewAssembly.createModule()
+        vc.title = "Title"
+        return vc
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        setViewControllers([mainViewController, searchViewController], animated: false)
+        setViewControllers([mainViewController, searchViewController, profileViewController], animated: false)
         guard let items = self.tabBar.items else { return }
-        for i in 0...1 {
-            items[i].image = UIImage(systemName: ["house", "magnifyingglass"][i])
+        for i in 0...2 {
+            items[i].image = UIImage(systemName: ["house", "magnifyingglass", "person.crop.circle"][i])
         }
-        items.last?.title = "Search"
+        items.last?.title = "Profile"
         self.tabBar.tintColor = .systemBlue
     }
 }
