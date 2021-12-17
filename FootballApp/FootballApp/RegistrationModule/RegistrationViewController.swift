@@ -46,7 +46,7 @@ final class RegistrationViewController: UIViewController {
         let label = UILabel()
         label.text = text
         label.font = UIFont.systemFont(ofSize: 15)
-        label.textColor =  AppColors.darkGreyColor
+        label.textColor = .secondaryLabel
 
         label.attributedText = attributedString
         label.isUserInteractionEnabled = true
@@ -72,7 +72,7 @@ final class RegistrationViewController: UIViewController {
     
     private lazy var separators = (0...1).map { _ -> UIView in
         let separator = UIView()
-        separator.backgroundColor = AppColors.lightGreyColor
+        separator.backgroundColor = .secondarySystemBackground
         return separator
     }
     
@@ -85,7 +85,7 @@ final class RegistrationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         
         view.addSubview(signInLabel)
         view.addSubview(signInButton)
@@ -172,12 +172,12 @@ final class RegistrationViewController: UIViewController {
     }
     
     @objc private func loginButtonPressed() {
-        signInButton.backgroundColor = AppColors.darkGreyColor
+        signInButton.backgroundColor = .secondarySystemBackground
         registrationViewPresenter?.loggingIn()
     }
     
     @objc private func loginButtonHover() {
-        signInButton.backgroundColor = AppColors.lightGreyColor
+        signInButton.backgroundColor = .tertiarySystemBackground
     }
     
     @objc private func createAccountTapped(gesture: UITapGestureRecognizer) -> Void {
