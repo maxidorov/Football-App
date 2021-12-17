@@ -91,7 +91,14 @@ class MiniMatchCell: UICollectionViewCell {
         super.prepareForReuse()
         ImageLoader.shared.cancelLoad(by: match?.homeTeam.logo)
         ImageLoader.shared.cancelLoad(by: match?.awayTeam.logo)
-}
+            
+        dateLabel.text = nil
+        homeTeamLabel.text = nil
+        awayTeamLabel.text = nil
+        homeScoreLabel.text = nil
+        awayScoreLabel.text = nil
+        
+    }
     
     
     private func loadImages() {

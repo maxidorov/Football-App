@@ -61,4 +61,8 @@ extension String {
         name = name.replacingOccurrences(of: "_", with: " ")
         return String(name.prefix(1)).capitalized + String(name.dropFirst())
     }
+    
+    func captializeFirst() -> String {
+        return String(self.prefix(1)).capitalized + String(self.dropFirst())
+    }
 }

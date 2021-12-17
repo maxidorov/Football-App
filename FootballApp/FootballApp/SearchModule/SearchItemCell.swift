@@ -9,15 +9,19 @@ import UIKit
 
 final class SearchItemCell: UICollectionViewCell {
     
-    private enum Constants {
+    enum Constants {
         enum Appearance {
             // Colors
-            static let backgroundColor: UIColor = #colorLiteral(red: 0.9724641442, green: 0.9726034999, blue: 0.9724336267, alpha: 1)
+            static let backgroundColor: UIColor = .secondarySystemBackground
             
             // Layout
             static let imageViewCornerRadius: CGFloat = 5
-            static let contentViewCornerRadius: CGFloat = 10
+            static let contentViewCornerRadius: CGFloat = 12
             static let titleMargins: CGFloat = 12
+            static let imageViewSize: CGFloat = 40
+            
+            static let cellMargins: CGFloat = 12
+            static let cellHeight: CGFloat = imageViewSize + 2 * cellMargins
         }
     }
     
@@ -27,8 +31,14 @@ final class SearchItemCell: UICollectionViewCell {
     
     lazy var titleLabel: UILabel = {
         let titleLabel = UILabel()
-        titleLabel.font = UIFont(name: "Helvetica-Light", size: 20)
+        titleLabel.font = .systemFont(ofSize: 16, weight: .medium)
         return titleLabel
+    }()
+    
+    lazy var descriptionLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 12)
+        return label
     }()
     
     lazy var imageView: UIImageView = {
@@ -36,7 +46,7 @@ final class SearchItemCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFit
         imageView.backgroundColor = .clear
         imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = Constants.Appearance.imageViewCornerRadius
+        imageView.layer.cornerRadius = Constants.Appearance.imageViewSize / 2
         return imageView
     }()
     
@@ -50,8 +60,7 @@ final class SearchItemCell: UICollectionViewCell {
         super.init(frame: frame)
         contentView.backgroundColor = Constants.Appearance.backgroundColor
         contentView.layer.cornerRadius = Constants.Appearance.contentViewCornerRadius
-        
-        contentView.addSubviews(titleLabel, imageView)
+        contentView.addSubviews(titleLabel, imageView, descriptionLabel)
     }
     
     required init?(coder: NSCoder) {
@@ -63,29 +72,42 @@ final class SearchItemCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        titleLabel.frame = CGRect(
-            x: Constants.Appearance.titleMargins,
-            y: Constants.Appearance.titleMargins,
-            width: contentView.frame.width * 0.7,
-            height: 22
-        )
-        
-        
         imageView.frame = CGRect(
             origin: .zero,
             size: CGSize(
-                width: 30,
-                height: 30
+                width: Constants.Appearance.imageViewSize,
+                height: Constants.Appearance.imageViewSize
             )
         )
-        imageView.center = CGPoint(
-            x: contentView.frame.maxX - 30,
-            y: contentView.center.y
+        imageView.frame.origin = CGPoint(
+            x: Constants.Appearance.cellMargins,
+            y: Constants.Appearance.cellMargins
         )
+        
+        titleLabel.frame = CGRect(
+            origin: .zero,
+            size: CGSize(
+                width: contentView.frame.width * 0.7,
+                height: 22
+            )
+        )
+        
+        titleLabel.frame.origin = CGPoint(
+            x: imageView.frame.maxX + Constants.Appearance.cellMargins,
+            y: Constants.Appearance.cellMargins
+        )
+        
+        descriptionLabel.frame = CGRect(
+            x: titleLabel.frame.minX,
+            y: titleLabel.frame.maxY,
+            width: contentView.frame.width, height: 18
+        )
+
     }
     
     override func prepareForReuse() {
         titleLabel.text = nil
+        descriptionLabel.text = nil
         imageView.image = nil
         ImageLoader.shared.cancelLoad(by: model?.imageURL)
     }
@@ -95,15 +117,23 @@ final class SearchItemCell: UICollectionViewCell {
     func configureWithModel(model: SearchModel) {
         self.model = model
         titleLabel.text = model.name
+        descriptionLabel.text = (model.description ?? "И такое бывает : (").captializeFirst()
         
         ImageLoader.shared.loadImage(with: model.imageURL) { (result) in
-            switch result {
+            onMainThreadAsync {
+                switch result {
                 case .success(let image):
-                    DispatchQueue.main.async {
-                        self.imageView.image = image
+                    self.imageView.image = image
+                case .failure:
+                    switch model.type {
+                    case .team:
+                        self.imageView.image = UIImage(systemName: "person.3")?.withTintColor(.gray, renderingMode: .alwaysOriginal)
+                    case .player:
+                        self.imageView.image = UIImage(systemName: "person")?.withTintColor(.gray, renderingMode: .alwaysOriginal)
+                    default:
+                        break
                     }
-                case .failure(let error):
-                    print(error.localizedDescription)
+                }
             }
         }
     }

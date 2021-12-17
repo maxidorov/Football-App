@@ -96,6 +96,13 @@ final class RegistrationViewController: UIViewController {
                             separators[0],
                             passwordTextField,
                             separators[1])
+        let tap = UITapGestureRecognizer(target: self, action: #selector(RegistrationViewController.dismissKeyboard))
+        view.addGestureRecognizer(tap)
+
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
     }
     
     override func viewDidLayoutSubviews() {

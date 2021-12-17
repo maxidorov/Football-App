@@ -196,7 +196,6 @@ final class MatchCell: UICollectionViewCell {
     
     
     private func layoutTimeLabel() {
-        // Position of this label is not final
         timeLabel.frame = CGRect(
             origin: .zero,
             size: CGSize(width: contentView.frame.width / 8, height: 12)

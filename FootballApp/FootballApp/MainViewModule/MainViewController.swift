@@ -16,11 +16,11 @@ class MainViewController: UIViewController {
         static let matchCellHeight: CGFloat = MatchCell.Constants.cellHeight
         
         // UI Constants
-        static let headerViewHeight: CGFloat = 120
+        static let headerViewHeight: CGFloat = 140
         static let bottomBarHeight: CGFloat = 80
         
         // Other
-        static let tabBarTitle = "Mathches"
+        static let tabBarTitle = "Matches"
     }
     
     private lazy var matchesCollectionView: UICollectionView = {
@@ -34,10 +34,23 @@ class MainViewController: UIViewController {
         return view
     } ()
     
+    lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.color = .secondaryLabel
+        indicator.startAnimating()
+        return indicator
+    }()
+    
     var mainViewPresenter: MainViewPresenter?
 
     private var headerView: UIView = UIView()
-
+    private var headerLabel: UILabel = {
+        let label = UILabel()
+        let font = UIFont.systemFont(ofSize: 34, weight: .bold)
+        label.font = font
+        label.text = Constants.tabBarTitle
+        return label
+    }()
     private var bottomBar: UIView = {
         let view = UIView()
         view.backgroundColor = .systemBackground
@@ -51,18 +64,19 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         [
-            headerView, matchesCollectionView, bottomBar,
+            headerView, matchesCollectionView, bottomBar, headerLabel
         ].forEach { view.addSubview($0) }
 
-        matchesCollectionView.backgroundColor = .clear
+        matchesCollectionView.backgroundColor = .systemBackground
         matchesCollectionView.delegate = self
         matchesCollectionView.dataSource = self
         matchesCollectionView.register(
             MatchCell.self,
             forCellWithReuseIdentifier: Constants.matchCellId
         )
-        
+        showActivityIndicator()
         mainViewPresenter?.viewDidLoad()
+        
     }
     
     override func viewWillLayoutSubviews() {
@@ -86,7 +100,29 @@ class MainViewController: UIViewController {
             x: 0, y: uiPrevMaxY,
             width: view.bounds.width, height: Constants.bottomBarHeight
         )
+        
+        activityIndicator.center = CGPoint(
+            x: view.center.x,
+            y: headerView.frame.maxY + 20
+        )
+        
+        headerLabel.frame = CGRect(
+            x: 1.5 * Constants.matchCellMargin,
+            y: headerView.frame.maxY - 60.0,
+            width: view.frame.width,
+            height: 40)
     }
+    
+    private func showActivityIndicator() {
+        view.addSubview(activityIndicator)
+        matchesCollectionView.fadeOut()
+    }
+    
+    private func hideActivityIndicator() {
+        activityIndicator.removeFromSuperview()
+        matchesCollectionView.fadeIn()
+    }
+    
 }
 
 //MARK: - CollectionView's Delegate & DataSource
@@ -123,9 +159,10 @@ extension MainViewController: MainView {
     
     func onMatchesChanged(matches: [Match]) {        
         self.matches = matches
-        DispatchQueue.main.async {
+        onMainThreadAsync {
             self.matchesCollectionView.reloadData()
             self.matchesCollectionView.scrollToItem(at: IndexPath(row: self.mainViewPresenter?.nextMatchPosition ?? 0, section: 0), at: [.top, .centeredHorizontally], animated: false)
+            self.hideActivityIndicator()
         }
     }
     

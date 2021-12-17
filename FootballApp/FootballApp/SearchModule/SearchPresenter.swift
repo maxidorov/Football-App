@@ -50,12 +50,13 @@ class SearchPresenter: SearchPresenterProtocol {
     // MARK: - private methods
     
     private func performSearchPlayers(for name: String) {
+        view?.makeIndicator(active: true)
         self.network.search(item: Player.self, withName: name, completion: { (result) in
             switch result {
             case .success(let players):
                 let playersSet = Set(players)
                 self.models = playersSet.map { player in
-                    SearchModel(type: .player, id: player.id, name: player.name, imageURL: player.photo)
+                    SearchModel(type: .player, id: player.id, name: player.name, imageURL: player.photo, description: player.flag)
                 }.sorted(by: { (mod1, mod2) -> Bool in
                     mod1.id < mod2.id
                 })
@@ -69,12 +70,13 @@ class SearchPresenter: SearchPresenterProtocol {
     }
     
     private func performSearchTeams(for name: String) {
+        view?.makeIndicator(active: true)
         self.network.search(item: Team.self, withName: name, completion: { (result) in
             switch result {
             case .success(let teams):
                 let teams = Set(teams)
                 self.models = teams.map({ (team) -> SearchModel in
-                    return SearchModel(type: .team, id: team.id, name: team.name, imageURL: team.logo)
+                    return SearchModel(type: .team, id: team.id, name: team.name, imageURL: team.logo, description: team.country)
                 }).sorted(by: { (mod1, mod2) -> Bool in
                     mod1.id < mod2.id
                 })

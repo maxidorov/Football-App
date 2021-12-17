@@ -22,6 +22,13 @@ class MatchViewController: UIViewController {
         return view
     } ()
     
+    lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.color = .secondaryLabel
+        indicator.startAnimating()
+        return indicator
+    }()
+    
     var presenter: MatchViewPresenterProtocol?
     
     override func viewDidLoad() {
@@ -45,14 +52,25 @@ class MatchViewController: UIViewController {
             OneLineStatisticCell.self,
             forCellWithReuseIdentifier: OneLineStatisticCell.Constants.identifier
         )
+        showActivityIndicator()
     }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         layoutHeaderView()
         layoutCollectionView()
+        layoutAIndicator()
     }
     
+    private func showActivityIndicator() {
+        view.addSubview(activityIndicator)
+        collectionView.fadeOut()
+    }
+    
+    private func hideActivityIndicator() {
+        activityIndicator.removeFromSuperview()
+        collectionView.fadeIn(duration: 0.2)
+    }
    
     private func layoutHeaderView() {
         headerView.frame = CGRect(
@@ -61,6 +79,10 @@ class MatchViewController: UIViewController {
             width: view.frame.width,
             height: MatchHeaderView.Constants.height
         )
+    }
+    
+    private func layoutAIndicator() {
+        activityIndicator.center = collectionView.center
     }
     
     private func layoutCollectionView() {
@@ -135,8 +157,10 @@ protocol MatchView: AnyObject {
 }
 
 extension MatchViewController: MatchView {
+    
     func statisticLoaded() {
-        self.collectionView.reloadData()
+        collectionView.reloadData()
+        hideActivityIndicator()
     }
     
     func matchLoaded() {

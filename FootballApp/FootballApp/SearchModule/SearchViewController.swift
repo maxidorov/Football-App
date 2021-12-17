@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class SearchViewController: UIViewController {
     enum Constants {
@@ -18,30 +19,41 @@ class SearchViewController: UIViewController {
     
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
+        
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .systemBackground
+        collectionView.clipsToBounds = true
         collectionView.register(SearchItemCell.self, forCellWithReuseIdentifier: SearchItemCell.identifier)
         return collectionView
     }()
     
     private lazy var searchController = UISearchController(searchResultsController: nil)
     
+    private lazy var kostilView: UIView = {
+        let howToCode = UIView()
+        view.backgroundColor = .systemBackground
+        howToCode.frame = .zero
+        return howToCode
+    }()
+    
     private lazy var searchTypeSegmentControl: UISegmentedControl = {
-        let searchTypeSegmentControll = UISegmentedControl(frame: .zero)
-        searchTypeSegmentControll.insertSegment(withTitle: "Игроки", at: 0, animated: false)
-        searchTypeSegmentControll.insertSegment(withTitle: "Команды", at: 1, animated: false)
+        let searchTypeSegmentControll = UISegmentedControl()
+        searchTypeSegmentControll.insertSegment(withTitle: "Players", at: 0, animated: false)
+        searchTypeSegmentControll.insertSegment(withTitle: "Teams", at: 1, animated: false)
         searchTypeSegmentControll.selectedSegmentIndex = 0
         searchTypeSegmentControll.translatesAutoresizingMaskIntoConstraints = false
         searchTypeSegmentControll.addTarget(self, action: #selector(updateSearchBySegment), for: .valueChanged)
+        searchTypeSegmentControll.backgroundColor = .systemBackground
         return searchTypeSegmentControll
     }()
     
-    private lazy var activityIndicator: UIActivityIndicatorView = {
-        let activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-        activityIndicator.isHidden = true
-        return activityIndicator
+    lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.color = .secondaryLabel
+        indicator.startAnimating()
+        return indicator
     }()
     
     private var animateSegment: Bool = false
@@ -55,12 +67,13 @@ class SearchViewController: UIViewController {
         
         navigationItem.largeTitleDisplayMode = .automatic
         navigationController?.navigationBar.prefersLargeTitles = true
-        view.addSubviews(collectionView, searchTypeSegmentControl, activityIndicator)
-        
-        navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.751727879, green: 0.7929214835, blue: 0.845862329, alpha: 1)]
-        
+        view.addSubviews(collectionView, kostilView, searchTypeSegmentControl, activityIndicator)
         setupSearchController()
+        makeIndicator(active: false)
+        kostilView.backgroundColor = .systemBackground
+
     }
+    
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -68,15 +81,28 @@ class SearchViewController: UIViewController {
         animateSegment = true
         
         let collectionViewHeight = view.frame.height - searchTypeSegmentControl.frame.maxY
-        collectionView.frame = CGRect(x: 0,
-                                      y: view.safeAreaLayoutGuide.layoutFrame.minY,
-                                      width: view.frame.width,
-                                      height: collectionViewHeight)
+        collectionView.frame = CGRect(
+            x: 0,
+            y: view.safeAreaLayoutGuide.layoutFrame.minY,
+            width: view.frame.width,
+            height: collectionViewHeight
+        )
         
-        activityIndicator.center = CGPoint(x: view.center.x, y: view.safeAreaLayoutGuide.layoutFrame.minY + 50)
+        activityIndicator.center = CGPoint(x: view.center.x, y: view.safeAreaLayoutGuide.layoutFrame.minY + 100)
+        
     }
-
+    
     // MARK: - Private methods
+
+    private func showActivityIndicator() {
+        view.addSubview(activityIndicator)
+        collectionView.fadeOut()
+    }
+    
+    private func hideActivityIndicator() {
+        activityIndicator.removeFromSuperview()
+        collectionView.fadeIn()
+    }
     
     private func setupSearchController() {
         searchController.searchResultsUpdater = self
@@ -90,9 +116,19 @@ class SearchViewController: UIViewController {
     private func setupSegmentControl(animated: Bool) {
         UIView.animate(withDuration: animated ? 0.3 : 0) {
             self.searchTypeSegmentControl.frame = CGRect(x: self.view.frame.width * 0.05,
-                                                         y: self.view.safeAreaLayoutGuide.layoutFrame.minY + 6,
-                                                         width: self.view.frame.width * 0.9,
-                                                         height: 31)
+                                                        y: self.view.safeAreaLayoutGuide.layoutFrame.minY + 7,
+                                                        width: self.view.frame.width * 0.9,
+                                                        height: 31)
+            let collectionViewHeight = self.view.frame.height - self.searchTypeSegmentControl.frame.maxY
+            self.collectionView.frame = CGRect(x: 0,
+                                            y: self.view.safeAreaLayoutGuide.layoutFrame.minY,
+                                            width: self.view.frame.width,
+                                            height: collectionViewHeight)
+            self.kostilView.frame = CGRect(
+                x: 0, y: self.view.safeAreaLayoutGuide.layoutFrame.minY,
+                width: self.view.frame.width,
+                height: 50
+            )
         }
     }
     
@@ -112,13 +148,12 @@ extension SearchViewController: SearchViewProtocol {
     }
     
     func makeIndicator(active: Bool) {
-        DispatchQueue.main.async {
-            self.collectionView.isHidden = active
-            self.activityIndicator.isHidden = !active
-            if active {
-                self.activityIndicator.startAnimating()
-            } else {
-                self.activityIndicator.stopAnimating()
+        onMainThreadAsync {
+            switch active {
+            case true:
+                self.showActivityIndicator()
+            case false:
+                self.hideActivityIndicator()
             }
         }
     }
@@ -171,7 +206,10 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
 
 extension SearchViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        CGSize(width: collectionView.bounds.width - 30, height: 46)
+        CGSize(
+            width: collectionView.bounds.width - 32,
+            height: SearchItemCell.Constants.Appearance.cellHeight
+        )
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -181,6 +219,10 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         CGSize(width: collectionView.bounds.width, height: 20)
     }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0)
+     }
 }
 
 // MARK: - UISearchResultsUpdating
@@ -189,5 +231,6 @@ extension SearchViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text else { return }
         presenter?.didTypeSearch(string: text)
+        setupSegmentControl(animated: true)
     }
 }
