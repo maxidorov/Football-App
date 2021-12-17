@@ -23,8 +23,8 @@ class PubMapView: UIView {
 
     private var pubsAround : [MKMapItem] = []
     private var mapView = MKMapView()
-    var locationManager: CLLocationManager?
-    var searchCompleted: Bool = false
+    private var locationManager = CLLocationManager()
+    private var searchCompleted: Bool = false
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -36,13 +36,12 @@ class PubMapView: UIView {
             height: self.frame.height - Constants.standardIndent * 2
         )
         
-        locationManager = CLLocationManager()
-        locationManager!.delegate = self
+        locationManager.delegate = self
 
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
-            locationManager!.startUpdatingLocation()
+            locationManager.startUpdatingLocation()
         } else {
-            locationManager!.requestWhenInUseAuthorization()
+            locationManager.requestWhenInUseAuthorization()
         }
     }
     
@@ -66,7 +65,7 @@ extension PubMapView : CLLocationManagerDelegate {
             debugPrint("AuthorizedAlways")
         case .authorizedWhenInUse:
             debugPrint("AuthorizedWhenInUse")
-            locationManager!.startUpdatingLocation()
+            locationManager.startUpdatingLocation()
         @unknown default:
             fatalError("Unknown authorization status")
         }
@@ -76,7 +75,11 @@ extension PubMapView : CLLocationManagerDelegate {
                         didUpdateLocations locations: [CLLocation]) {
 
         print("Location changed \(locations.first!.coordinate)")
-        let location = locations.first!
+        
+        guard let location = locations.first else {
+            return
+        }
+        
         mapView.centerToLocation(location)
         
         let coordinateRegion = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: 2000, longitudinalMeters: 2000)
@@ -164,6 +167,8 @@ private extension MKMapView {
 }
 
 class Pub: NSObject, MKAnnotation {
+  private static let emptySubtitle = ""
+    
   let title: String?
   let locationName: String?
   let coordinate: CLLocationCoordinate2D
@@ -181,6 +186,6 @@ class Pub: NSObject, MKAnnotation {
   }
 
   var subtitle: String? {
-    return ""
+    return Pub.emptySubtitle
   }
 }
