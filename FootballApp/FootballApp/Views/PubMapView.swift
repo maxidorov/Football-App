@@ -13,7 +13,6 @@ class PubMapView : UIView {
     
     private enum Constants {
         // UI Constants
-        static let mapheight: CGFloat = 180
         static let standardIndent: CGFloat = 20
         
         // Search Constants
@@ -21,7 +20,7 @@ class PubMapView : UIView {
         static let mapAnnotationIdentifier = "pub"
     }
 
-    private var pubsAround : [MKMapItem] = []
+    var pubsAround : [MKMapItem] = []
     private var mapView = MKMapView()
     private var locationManager = CLLocationManager()
     private var searchCompleted: Bool = false
@@ -30,11 +29,6 @@ class PubMapView : UIView {
         super.init(frame: frame)
         
         self.addSubview(mapView)
-        mapView.frame = CGRect(
-            x: Constants.standardIndent, y: Constants.standardIndent,
-            width: self.frame.width - Constants.standardIndent * 2,
-            height: self.frame.height - Constants.standardIndent * 2
-        )
         
         locationManager.delegate = self
 
@@ -48,7 +42,18 @@ class PubMapView : UIView {
     required init?(coder: NSCoder) {
         fatalError("MatchHeaderView init(coder: )")
     }
-
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        mapView.frame = CGRect(
+            origin: .zero,
+            size: CGSize(
+                width: frame.width,
+                height: frame.height
+            )
+        )
+    }
+        
 }
 
 extension PubMapView : CLLocationManagerDelegate {
@@ -82,10 +87,12 @@ extension PubMapView : CLLocationManagerDelegate {
         
         mapView.centerToLocation(location)
         
-        let coordinateRegion = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: 2000, longitudinalMeters: 2000)
+        let coordinateRegion = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: 3000, longitudinalMeters: 3000)
         
         mapView.setRegion(coordinateRegion, animated: true)
         mapView.showsUserLocation = true
+        mapView.showsCompass = false
+
         
         if(!self.searchCompleted) {
             let request = MKLocalSearch.Request()
