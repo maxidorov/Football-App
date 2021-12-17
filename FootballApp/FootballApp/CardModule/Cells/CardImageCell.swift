@@ -44,14 +44,13 @@ final class CardImageCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         photoView.center = contentView.center
-        configureSeparator(separator)
     }
 }
 
 // MARK: - PlayerCardCellProtocol
 
 extension CardImageCell: CardCellProtocol {
-    func configure(with model: SearchModel) {
+    func configure(with model: SearchModel, playerInfo: PlayerInfo?, indexPath: IndexPath?) {
         DispatchQueue.global().async {
             ImageLoader.shared.loadImage(with: model.imageURL) { (result) in
                 switch result {

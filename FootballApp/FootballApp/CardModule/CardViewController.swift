@@ -24,6 +24,7 @@ final class CardViewController: UIViewController {
         collectionView.register(CardLabelCell.self, forCellWithReuseIdentifier: CardLabelCell.identifier)
         collectionView.register(CardImageCell.self, forCellWithReuseIdentifier: CardImageCell.identifier)
         collectionView.register(CardSubscribeCell.self, forCellWithReuseIdentifier: CardSubscribeCell.identifier)
+        collectionView.register(CardParameterCell.self, forCellWithReuseIdentifier: CardParameterCell.identifier)
         return collectionView
     }()
     
@@ -33,6 +34,7 @@ final class CardViewController: UIViewController {
         super.viewDidLoad()
         
         view.addSubview(collectionView)
+        presenter?.getExtraInfo()
     }
     
     override func viewDidLayoutSubviews() {
@@ -45,13 +47,13 @@ final class CardViewController: UIViewController {
 
 extension CardViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        3
+        presenter?.cellsCount ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let identifier = presenter?.identifier(for: indexPath),
               let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as? (CardCellProtocol & UICollectionViewCell) else { return UICollectionViewCell() }
-        presenter?.configure(cell: cell)
+        presenter?.configure(cell: cell, indexPath: indexPath)
         return cell
     }
 }
@@ -74,4 +76,10 @@ extension CardViewController: UICollectionViewDelegateFlowLayout {
 
 // MARK: - PlayerCardViewProtocol
 
-extension CardViewController: CardViewProtocol {}
+extension CardViewController: CardViewProtocol {
+    func updateViewWithInfo() {
+        onMainThreadAsync {
+            self.collectionView.reloadData()
+        }
+    }
+}
