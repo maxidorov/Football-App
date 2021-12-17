@@ -75,7 +75,6 @@ class LastMatchesCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        debugPrint("trying to init")
         
         addSubviews(collectionView)
         collectionView.fadeOut(duration: 0)

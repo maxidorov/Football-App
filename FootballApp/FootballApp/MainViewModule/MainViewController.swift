@@ -23,12 +23,8 @@ class MainViewController: UIViewController {
         static let tabBarTitle = "Matches"
     }
     
+    private let layout = UICollectionViewFlowLayout()
     private lazy var matchesCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(
-            width: view.frame.width - 2 * Constants.matchCellMargin,
-            height: Constants.matchCellHeight
-        )
         layout.scrollDirection = .vertical
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         return view
@@ -110,6 +106,7 @@ class MainViewController: UIViewController {
             y: headerView.frame.maxY - 60.0,
             width: view.frame.width,
             height: 40)
+        layout.invalidateLayout()
     }
     
     private func showActivityIndicator() {
@@ -125,7 +122,7 @@ class MainViewController: UIViewController {
 }
 
 //MARK: - CollectionView's Delegate & DataSource
-extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         1
     }
@@ -145,6 +142,13 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let vc = MatchViewAssembly.createModule(with: matches[indexPath.row])
         present(vc, animated: true, completion: nil)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(
+            width:  matchesCollectionView.frame.width - 2 * Constants.matchCellMargin,
+            height: Constants.matchCellHeight
+        )
     }
 }
 
