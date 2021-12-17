@@ -12,6 +12,14 @@ final class CardPresenter: CardPresenterProtocol {
     
     var model: SearchModel
     
+    var cellsCount: Int {
+        return playerInfo != nil ? 10 : 3
+    }
+    
+    var playerInfo: PlayerInfo?
+    
+    var network: NetworkProtocol = Network()
+    
     weak var view: CardViewProtocol?
     
     weak var cellUpdater: CellUpdaterProtocol?
@@ -23,12 +31,21 @@ final class CardPresenter: CardPresenterProtocol {
         })
     }
     
-    func configure(cell: CardCellProtocol) {
-        cell.configure(with: model)
+    func configure(cell: CardCellProtocol, indexPath: IndexPath) {
+        cell.configure(with: model, playerInfo: playerInfo, indexPath: indexPath)
         
         guard let cell = cell as? CardSubscribeCell else { return }
         cell.subscribeButton.addTarget(self, action: #selector(subscribeButtonPressed(sender:)), for: .touchUpInside)
         cellUpdater = cell
+    }
+    
+    func getExtraInfo() {
+        if model.type == .player {
+            network.getPlayerInfo(by: model.id) { (info) in
+                self.playerInfo = info
+                self.view?.updateViewWithInfo()
+            }
+        }
     }
     
     @objc private func subscribeButtonPressed(sender: UIButton) {
@@ -49,7 +66,7 @@ final class CardPresenter: CardPresenterProtocol {
         case 2:
             return CardSubscribeCell.identifier
         default:
-            return nil
+            return CardParameterCell.identifier
         }
     }
     

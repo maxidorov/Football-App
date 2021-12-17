@@ -42,13 +42,12 @@ final class CardLabelCell: UICollectionViewCell {
         super.layoutSubviews()
         nameLabel.frame = CGRect(x: 0, y: 0, width: contentView.frame.width * 0.9, height: 50)
         nameLabel.center = contentView.center
-        configureSeparator(separator)
     }
 }
 
 extension CardLabelCell: CardCellProtocol {
     
-    func configure(with model: SearchModel) {
+    func configure(with model: SearchModel, playerInfo: PlayerInfo?, indexPath: IndexPath?) {
         nameLabel.text = model.name
     }
 }

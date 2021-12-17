@@ -8,14 +8,18 @@
 import UIKit
 
 protocol CardCellProtocol {
-    func configure(with model: SearchModel)
+    func configure(with model: SearchModel, playerInfo: PlayerInfo?, indexPath: IndexPath?)
 }
 
-protocol CardViewProtocol: AnyObject {}
+protocol CardViewProtocol: AnyObject {
+    func updateViewWithInfo()
+}
 
 protocol CardPresenterProtocol: AnyObject {
+    var cellsCount: Int { get }
     func identifier(for indexPath: IndexPath) -> String?
-    func configure(cell: CardCellProtocol)
+    func configure(cell: CardCellProtocol, indexPath: IndexPath)
+    func getExtraInfo()
 }
 
 

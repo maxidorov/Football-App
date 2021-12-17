@@ -28,7 +28,7 @@ enum CardCellSizes: Int {
             case TypesContent.subscribe.rawValue:
                 return CGSize(width: width, height: CardCellSizes.subscribeHeight.rawValue)
             default:
-                return .zero
+                return CGSize(width: width, height: CardCellSizes.labelHeignt.rawValue - 10)
         }
     }
 }
