@@ -6,14 +6,21 @@
 //
 
 import Foundation
+import FirebaseAuth
 
 protocol MainViewPresenterProtocol: AnyObject {
     var nextMatchPosition: Int { get }
     func viewDidLoad()
-    
+    func showLogoutAlert()
 }
 
 class MainViewPresenter: MainViewPresenterProtocol {
+    private struct LogoutAlertString {
+        static let title = "Are you sure you want to logout?"
+        static let logoutAction = "Logout"
+        static let cancelAction = "Cancel"
+    }
+
     weak var view: MainView?
     
     private var mathces: [Match] = [] {
@@ -23,6 +30,7 @@ class MainViewPresenter: MainViewPresenterProtocol {
     }
     private lazy var subscribedEntities = [Any]()
     private lazy var network: Network = Network()
+    private let logoutAlertTitle = LogoutAlertString.title
     
     var nextMatchPosition: Int = 0
     
@@ -30,6 +38,23 @@ class MainViewPresenter: MainViewPresenterProtocol {
     
     func viewDidLoad() {
         retrieveMatches()
+    }
+
+    @objc func showLogoutAlert() {
+        let alert = UIAlertController(
+            title: logoutAlertTitle,
+            message: nil,
+            preferredStyle: .alert
+        )
+
+        let logoutAction: (UIAlertAction) -> Void = { _ in self.logout() }
+        alert.addAction(UIAlertAction(title: LogoutAlertString.cancelAction, style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: LogoutAlertString.logoutAction, style: .default, handler: logoutAction))
+        view?.present(alert: alert)
+    }
+
+    private func logout() {
+        try? Auth.auth().signOut()
     }
     
     // MARK: - Private methods
