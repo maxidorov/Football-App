@@ -53,7 +53,6 @@ class SearchViewController: UIViewController {
     lazy var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .medium)
         indicator.color = .secondaryLabel
-        indicator.startAnimating()
         return indicator
     }()
     
@@ -76,8 +75,6 @@ class SearchViewController: UIViewController {
         kostilView.backgroundColor = .systemBackground
 
     }
-    
-
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -89,28 +86,22 @@ class SearchViewController: UIViewController {
         super.viewDidLayoutSubviews()
         setupSegmentControl(animated: animateSegment)
         animateSegment = true
-        
-        let collectionViewHeight = view.frame.height - searchTypeSegmentControl.frame.maxY
-        collectionView.frame = CGRect(
-            x: 0,
-            y: view.safeAreaLayoutGuide.layoutFrame.minY,
-            width: view.frame.width,
-            height: collectionViewHeight
-        )
+
         
         activityIndicator.center = CGPoint(x: view.center.x, y: view.safeAreaLayoutGuide.layoutFrame.minY + 100)
-        
     }
     
     // MARK: - Private methods
 
     private func showActivityIndicator() {
-        view.addSubview(activityIndicator)
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
         collectionView.fadeOut()
     }
     
     private func hideActivityIndicator() {
-        activityIndicator.removeFromSuperview()
+        activityIndicator.isHidden = true
+        activityIndicator.stopAnimating()
         collectionView.fadeIn()
     }
     
@@ -245,6 +236,5 @@ extension SearchViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text else { return }
         presenter?.didTypeSearch(string: text)
-        setupSegmentControl(animated: true)
     }
 }

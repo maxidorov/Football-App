@@ -46,7 +46,7 @@ final class SearchItemCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFit
         imageView.backgroundColor = .clear
         imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = Constants.Appearance.imageViewSize / 2
+        imageView.layer.cornerRadius = Constants.Appearance.imageViewCornerRadius
         return imageView
     }()
     
@@ -117,7 +117,7 @@ final class SearchItemCell: UICollectionViewCell {
     func configureWithModel(model: SearchModel) {
         self.model = model
         titleLabel.text = model.name
-        descriptionLabel.text = (model.description ?? "И такое бывает : (").captializeFirst()
+        descriptionLabel.text = (model.description ?? "").captializeFirst()
         
         ImageLoader.shared.loadImage(with: model.imageURL) { (result) in
             onMainThreadAsync {

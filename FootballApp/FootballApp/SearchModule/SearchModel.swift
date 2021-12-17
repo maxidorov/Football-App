@@ -31,8 +31,7 @@ extension SearchModel {
             let id = dict["id"],
             let typeInt = type as? Int,
             let nameStr = name as? String,
-            let idInt = id as? Int,
-            let desc = dict["description"] as? String
+            let idInt = id as? Int
         else {
             return nil
         }
@@ -40,6 +39,7 @@ extension SearchModel {
         
         let imgUrl = dict["imageUrl"] as? String
         let subsStatus = dict["subscriptionStatus"] as? Bool
+        let desc = dict["description"] as? String
         
         self.init(
             type: ModelType.init(rawValue: typeInt) ?? .unknown,

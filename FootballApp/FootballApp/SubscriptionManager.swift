@@ -12,12 +12,14 @@ final class SubscriptionManager {
     
     static var currentSubscriptions: [SearchModel] = []
     
-    static func updateSubscriptions() {
+    static func updateSubscriptions(completion: ([SearchModel]) -> Void = {_ in}) {
         guard let userID = Auth.auth().currentUser?.uid else { return }
         FirebaseSubscriptionService.getSubscriptions(user: userID) { (response) in
             currentSubscriptions = response.compactMap { item in
                 if let model = item as? SearchModel {
-                    return SearchModel(type: model.type, id: model.id, name: model.name, imageURL: model.imageURL)
+                    return SearchModel(type: model.type, id: model.id, name: model.name,
+                                       imageURL: model.imageURL, subscriptonStatus: model.subscriptonStatus,
+                                       description: model.description)
                 }
                 
                 return nil
