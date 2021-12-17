@@ -80,11 +80,32 @@ class MiniMatchCell: UICollectionViewCell {
     }
     
     private func configure() {
-        dateLabel.text = (match?.startAt ?? "").toDate
-        homeTeamLabel.text = match?.homeTeam.shortName
-        awayTeamLabel.text = match?.awayTeam.shortName
-        homeScoreLabel.text = "\(match?.homeScore?.current ?? 0)"
-        awayScoreLabel.text = "\(match?.awayScore?.current ?? 0)"
+        guard let match = match else { return }
+
+        dateLabel.text = (match.startAt ?? "").toDate
+        homeTeamLabel.text = match.homeTeam.shortName
+        awayTeamLabel.text = match.awayTeam.shortName
+        homeScoreLabel.text = "\(match.homeScore?.current ?? 0)"
+        awayScoreLabel.text = "\(match.awayScore?.current ?? 0)"
+        
+        if match.homeScore?.display ?? 0 > match.awayScore?.display ?? 0 {
+            homeTeamLabel.textColor = .label
+            awayTeamLabel.textColor = .secondaryLabel
+            homeScoreLabel.textColor = .label
+            awayScoreLabel.textColor = .secondaryLabel
+        } else if match.homeScore?.display ?? 0 < match.awayScore?.display ?? 0 {
+            homeTeamLabel.textColor = .secondaryLabel
+            awayTeamLabel.textColor = .label
+            homeScoreLabel.textColor = .secondaryLabel
+            awayScoreLabel.textColor = .label
+        } else {
+            homeTeamLabel.textColor = .secondaryLabel
+            awayTeamLabel.textColor = .secondaryLabel
+            homeScoreLabel.textColor = .secondaryLabel
+            awayScoreLabel.textColor = .secondaryLabel
+        }
+        
+        
     }
     
     override func prepareForReuse() {
