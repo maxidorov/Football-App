@@ -18,6 +18,7 @@ class MainViewController: UIViewController {
         // UI Constants
         static let headerViewHeight: CGFloat = 140
         static let bottomBarHeight: CGFloat = 80
+        static let logoutButtonSide: CGFloat = 44
         
         // Other
         static let tabBarTitle = "Matches"
@@ -40,6 +41,7 @@ class MainViewController: UIViewController {
     var mainViewPresenter: MainViewPresenter?
 
     private var headerView: UIView = UIView()
+
     private var headerLabel: UILabel = {
         let label = UILabel()
         let font = UIFont.systemFont(ofSize: 34, weight: .bold)
@@ -47,21 +49,53 @@ class MainViewController: UIViewController {
         label.text = Constants.tabBarTitle
         return label
     }()
+
+    private lazy var logoutButton: UIButton = {
+        let button = UIButton()
+
+        let largeConfig = UIImage.SymbolConfiguration(
+            pointSize: Constants.logoutButtonSide,
+            weight: .bold,
+            scale: .large
+        )
+
+        let image = UIImage(
+            systemName: "person.crop.circle",
+            withConfiguration: largeConfig
+        )
+
+        button.setImage(image, for: .normal)
+        button.contentMode = .scaleAspectFill
+
+        button.addTarget(
+            self,
+            action: #selector(showLogoutAlert),
+            for: .touchUpInside
+        )
+
+        button.tintColor = .lightGray
+        return button
+    }()
+
     private var bottomBar: UIView = {
         let view = UIView()
         view.backgroundColor = .systemBackground
         view.isHidden = true
         return view
     }()
-    
-    private lazy var fakeItems: [String] = (1...100).map { i -> String in return "Cell #\(i)"}
+
     private var matches: [Match] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        [
-            headerView, matchesCollectionView, bottomBar, headerLabel
-        ].forEach { view.addSubview($0) }
+        view.addSubviews(
+            headerView,
+            matchesCollectionView,
+            bottomBar,
+            headerLabel
+        )
+
+        headerView.addSubview(logoutButton)
 
         matchesCollectionView.backgroundColor = .systemBackground
         matchesCollectionView.delegate = self
@@ -105,7 +139,22 @@ class MainViewController: UIViewController {
             x: 1.5 * Constants.matchCellMargin,
             y: headerView.frame.maxY - 60.0,
             width: view.frame.width,
-            height: 40)
+            height: 40
+        )
+
+        logoutButton.frame = CGRect(
+            origin: .zero,
+            size: CGSize(
+                width: Constants.logoutButtonSide,
+                height: Constants.logoutButtonSide
+            )
+        )
+
+        logoutButton.center = CGPoint(
+            x: headerLabel.frame.maxX - Constants.logoutButtonSide - 20,
+            y: headerLabel.frame.origin.y + headerLabel.frame.height / 2
+        )
+
         layout.invalidateLayout()
     }
     
@@ -117,6 +166,10 @@ class MainViewController: UIViewController {
     private func hideActivityIndicator() {
         activityIndicator.removeFromSuperview()
         matchesCollectionView.fadeIn()
+    }
+
+    @objc private func showLogoutAlert() {
+        mainViewPresenter?.showLogoutAlert()
     }
     
 }
@@ -156,10 +209,10 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
 
 protocol MainView: AnyObject {
     func onMatchesChanged(matches: [Match])
+    func present(alert: UIAlertController)
 }
 
 extension MainViewController: MainView {
-    
     func onMatchesChanged(matches: [Match]) {        
         self.matches = matches
         onMainThreadAsync {
@@ -170,5 +223,8 @@ extension MainViewController: MainView {
             self.hideActivityIndicator()
         }
     }
-    
+
+    func present(alert: UIAlertController) {
+        present(alert, animated: true)
+    }
 }
