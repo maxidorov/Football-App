@@ -72,7 +72,6 @@ class MainViewController: UIViewController {
         )
         showActivityIndicator()
         mainViewPresenter?.viewDidLoad()
-        
     }
     
     override func viewWillLayoutSubviews() {
