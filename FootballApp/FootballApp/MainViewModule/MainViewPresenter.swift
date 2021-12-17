@@ -35,15 +35,26 @@ class MainViewPresenter: MainViewPresenterProtocol {
     // MARK: - Private methods
     
     private func retrieveMatches() {
-        //HARDCODE
-        subscribedEntities.append(
-            Player(id: 289, name: "Leo Messi", shortName: nil, hasPhoto: false, photo: nil, age: nil, position: nil, positionName: nil, flag: nil)
-        )
-        subscribedEntities.append(
-            Team(id: 11, name: "B", shortName: nil, hasLogo: false, logo: nil, country: nil)
-        )
+        SubscriptionManager.delegate = self
         
-        network.searchMatches(by: subscribedEntities, completion: { result in
+        SubscriptionManager.updateSubscriptions { (models) in
+            self.updateMatchesWith(models: models)
+        }
+        
+    }
+    
+    private func updateMatchesWith(models: [SearchModel]) {
+        subscribedEntities = models.compactMap {
+            switch $0.type {
+            case .player:
+                return Player(id: $0.id)
+            case .team:
+                return Team(id: $0.id)
+            default:
+                return nil
+            }
+        }
+        self.network.searchMatches(by: self.subscribedEntities, completion: { result in
             switch result {
             case .success(let matches):
                 self.mathces = self.filterMatches(matches)
@@ -79,5 +90,13 @@ class MainViewPresenter: MainViewPresenterProtocol {
     
     private func matchesChanged() {
         view?.onMatchesChanged(matches: mathces)
+    }
+}
+
+extension MainViewPresenter: SubscriptionManagerDelegate {
+    func updateMatchesWith(oldModel: [SearchModel], newModel: [SearchModel]) {
+        if oldModel != newModel {
+            updateMatchesWith(models: newModel)
+        }
     }
 }
