@@ -116,6 +116,15 @@ final class SearchItemCell: UICollectionViewCell {
     
     func configureWithModel(model: SearchModel) {
         self.model = model
+        switch model.type {
+        case .team:
+            self.imageView.layer.cornerRadius = Constants.Appearance.imageViewCornerRadius
+        case .player:
+            self.imageView.layer.cornerRadius = Constants.Appearance.imageViewSize / 2
+        default:
+            break
+        }
+        
         titleLabel.text = model.name
         descriptionLabel.text = (model.description ?? "").captializeFirst()
         
@@ -127,8 +136,10 @@ final class SearchItemCell: UICollectionViewCell {
                 case .failure:
                     switch model.type {
                     case .team:
+                        self.imageView.layer.cornerRadius = Constants.Appearance.imageViewCornerRadius
                         self.imageView.image = UIImage(systemName: "person.3")?.withTintColor(.gray, renderingMode: .alwaysOriginal)
                     case .player:
+                        self.imageView.layer.cornerRadius = Constants.Appearance.imageViewSize / 2
                         self.imageView.image = UIImage(systemName: "person")?.withTintColor(.gray, renderingMode: .alwaysOriginal)
                     default:
                         break

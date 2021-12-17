@@ -92,7 +92,7 @@ class FirebaseSubscriptionService {
             "imageUrl" : subscriptionModel.imageURL ?? "",
             "type" : (subscriptionModel.type == .team ? 2 : 1),
             "subscriptionStatus" : true,
-            "description": subscriptionModel.description
+            "description": subscriptionModel.description as Any
         ]
         
         let docRef = dataBase.collection("userSubscriptions")
