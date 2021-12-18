@@ -18,7 +18,7 @@ class MainViewController: UIViewController {
         // UI Constants
         static let headerViewHeight: CGFloat = 140
         static let bottomBarHeight: CGFloat = 80
-        static let logoutButtonSide: CGFloat = 44
+        static let logoutButtonSide: CGFloat = 34
         
         // Other
         static let tabBarTitle = "Matches"
@@ -55,8 +55,8 @@ class MainViewController: UIViewController {
 
         let largeConfig = UIImage.SymbolConfiguration(
             pointSize: Constants.logoutButtonSide,
-            weight: .bold,
-            scale: .large
+            weight: .medium,
+            scale: .medium
         )
 
         let image = UIImage(
@@ -151,8 +151,8 @@ class MainViewController: UIViewController {
         )
 
         logoutButton.center = CGPoint(
-            x: headerLabel.frame.maxX - Constants.logoutButtonSide - 20,
-            y: headerLabel.frame.origin.y + headerLabel.frame.height / 2
+            x: headerLabel.frame.maxX - Constants.logoutButtonSide - 24,
+            y: headerLabel.center.y
         )
 
         layout.invalidateLayout()
@@ -213,11 +213,11 @@ protocol MainView: AnyObject {
 }
 
 extension MainViewController: MainView {
-    func onMatchesChanged(matches: [Match]) {        
+    func onMatchesChanged(matches: [Match]) {
         self.matches = matches
         onMainThreadAsync {
             self.matchesCollectionView.reloadData()
-            if matches.count != 0 {
+            if self.mainViewPresenter?.nextMatchPosition != nil && self.matches.count != 0 {
                 self.matchesCollectionView.scrollToItem(at: IndexPath(row: self.mainViewPresenter?.nextMatchPosition ?? 0, section: 0), at: [.top, .centeredHorizontally], animated: false)
             }
             self.hideActivityIndicator()
