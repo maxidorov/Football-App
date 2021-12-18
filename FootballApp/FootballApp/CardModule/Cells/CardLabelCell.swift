@@ -21,7 +21,7 @@ final class CardLabelCell: UICollectionViewCell {
         let nameLabel = UILabel()
         nameLabel.font = UIFont.systemFont(ofSize: 25, weight: .semibold)
         nameLabel.textAlignment = .center
-        nameLabel.textColor = .black
+        nameLabel.textColor = .label
         return nameLabel
     }()
     

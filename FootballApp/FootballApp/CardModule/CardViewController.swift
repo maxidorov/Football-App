@@ -20,7 +20,7 @@ final class CardViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .secondarySystemBackground
         collectionView.register(CardLabelCell.self, forCellWithReuseIdentifier: CardLabelCell.identifier)
         collectionView.register(CardImageCell.self, forCellWithReuseIdentifier: CardImageCell.identifier)
         collectionView.register(CardSubscribeCell.self, forCellWithReuseIdentifier: CardSubscribeCell.identifier)
